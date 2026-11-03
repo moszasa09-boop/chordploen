@@ -104,6 +104,9 @@ a.chip.src:hover{text-decoration:underline}
 .pstat.ok{color:var(--mid)} .pstat.warn{color:var(--fast)}
 .prepopen{width:100%}
 .dot.half{background:var(--chord)}
+.sync{display:flex;align-items:center;gap:6px;flex-wrap:wrap;color:var(--fg)}
+.sdot{width:9px;height:9px;border-radius:50%;background:var(--line);flex:none}
+.sdot.ok{background:var(--mid)} .sdot.busy{background:var(--chord)} .sdot.err{background:var(--fast)}
 .pastebox{font-size:.9rem;margin:2px 0 14px}
 .pastebox summary{cursor:pointer;display:inline-block;border:1px solid var(--accent);color:var(--accent);background:var(--accent-soft);border-radius:99px;padding:4px 12px;font-weight:600;list-style:none}
 .pastebox summary::-webkit-details-marker{display:none}
@@ -275,7 +278,7 @@ body.stage .stagebar{display:flex;position:fixed;left:0;right:0;bottom:0;z-index
     </div>
     <div class="libfoot">
       <div><kbd>[</kbd> <kbd>]</kbd> ลด/เพิ่มคีย์ · <kbd>Space</kbd> เลื่อน · <kbd>M</kbd> คลิก · <kbd>←</kbd> <kbd>→</kbd> เพลงก่อน/ถัดไป · <kbd>S</kbd> โหมดเวที</div>
-      <div>คอร์ดที่วางไว้เก็บในเบราว์เซอร์เครื่องนี้เท่านั้น ควรสำรองเก็บไว้ก่อนวันเล่น</div>
+      <div class="sync"><span class="sdot" id="sync-dot"></span><span id="sync-txt" style="flex:1;min-width:0">ยังไม่ได้เชื่อมซิงก์ข้ามเครื่อง</span><button class="tb" id="sync-open">ตั้งค่าซิงก์</button></div>
       <div class="btns"><button class="tb" id="backup">คัดลอกข้อมูลสำรอง</button><button class="tb" id="restore">กู้คืน</button></div>
     </div>
   </aside>
@@ -382,6 +385,29 @@ body.stage .stagebar{display:flex;position:fixed;left:0;right:0;bottom:0;z-index
   </div>
 </div>
 
+<div class="modal" id="sync" hidden>
+  <div class="dialog" role="dialog" aria-labelledby="sync-h" style="width:min(620px,100%)">
+    <header><h3 id="sync-h">ซิงก์ข้ามเครื่องผ่าน GitHub</h3><button class="tb" id="sync-close">ปิด</button></header>
+    <div style="padding:14px 16px;display:flex;flex-direction:column;gap:10px;overflow:auto">
+      <p id="sync-where" class="empty-note" hidden>หน้านี้เชื่อม GitHub ไม่ได้ ให้เปิดที่ <a href="https://moszasa09-boop.github.io/chordploen/" target="_blank" rel="noopener">moszasa09-boop.github.io/chordploen</a> แล้วตั้งค่าที่นั่น</p>
+      <p style="margin:0;color:var(--muted);font-size:.9rem">เนื้อร้องและคอร์ดที่บันทึกจะถูกเก็บใน repo ส่วนตัวบน GitHub เปิดจากเครื่องไหนก็เห็นชุดเดียวกัน ตั้งค่าครั้งเดียวต่อเครื่อง</p>
+      <ol style="margin:0;padding-left:1.2em;font-size:.9rem;display:flex;flex-direction:column;gap:4px">
+        <li>เปิด <a href="https://github.com/settings/personal-access-tokens/new" target="_blank" rel="noopener">หน้าสร้างโทเคนของ GitHub ↗</a> (ล็อกอินบัญชี moszasa09-boop)</li>
+        <li>ตั้งชื่อ เช่น <code>chordploen</code> · Expiration เลือก 1 ปี</li>
+        <li>Repository access เลือก <b>Only select repositories</b> → <b>chordploen-data</b></li>
+        <li>Permissions → Repository permissions → <b>Contents</b> เลือก <b>Read and write</b></li>
+        <li>กด Generate token แล้วคัดลอกโทเคนที่ขึ้นต้นด้วย <code>github_pat_</code> มาวางด้านล่าง</li>
+      </ol>
+      <label for="sync-repo" style="font-size:.85rem;font-weight:600">repo ที่เก็บข้อมูล</label>
+      <input class="search" id="sync-repo" autocomplete="off" spellcheck="false" value="moszasa09-boop/chordploen-data">
+      <label for="sync-token" style="font-size:.85rem;font-weight:600">โทเคน</label>
+      <input class="search" id="sync-token" type="password" autocomplete="off" spellcheck="false" placeholder="github_pat_...">
+      <p id="sync-msg" style="margin:0;font-size:.85rem;color:var(--muted)">โทเคนเก็บไว้ในเครื่องนี้เท่านั้น ใช้ส่งข้อมูลไป GitHub อย่างเดียว และไม่ถูกรวมไปกับข้อมูลสำรอง</p>
+    </div>
+    <footer><span class="hint"></span><button class="tb" id="sync-off" hidden>เลิกเชื่อมในเครื่องนี้</button><button class="tb primary" id="sync-go">เชื่อมต่อ</button></footer>
+  </div>
+</div>
+
 <div class="toast" id="toast" hidden></div>
 
 <script>
@@ -391,10 +417,12 @@ const $ = s => document.querySelector(s);
 const esc = s => String(s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 // localStorage with an in-memory fallback, so the page still works where storage is blocked
 const mem = {};
+// keys that follow the user across devices (song text, own songs, per-song key/capo)
+const SYNC_KEY = k => /^cp\.(text\.|user$|sp\.)/.test(k);
 const store = {
   get(k, d) { try { const v = localStorage.getItem(k); return v == null ? d : JSON.parse(v); } catch (e) { return k in mem ? mem[k] : d; } },
-  set(k, v) { mem[k] = v; try { localStorage.setItem(k, JSON.stringify(v)); return true; } catch (e) { return false; } },
-  del(k) { delete mem[k]; try { localStorage.removeItem(k); } catch (e) {} },
+  set(k, v) { mem[k] = v; let ok = true; try { localStorage.setItem(k, JSON.stringify(v)); } catch (e) { ok = false; } if (SYNC_KEY(k)) syncTouch(k); return ok; },
+  del(k) { delete mem[k]; try { localStorage.removeItem(k); } catch (e) {} if (SYNC_KEY(k)) syncTouch(k); },
   keys() { try { return Object.keys(localStorage).filter(k => k.startsWith('cp.')); } catch (e) { return Object.keys(mem); } }
 };
 let toastT;
@@ -1757,18 +1785,101 @@ $('#prep-save').onclick = () => {
   $('#prep').hidden = true; loadSong(songId, true); toast(`บันทึกเนื้อร้องแล้ว ${n} เพลง อย่าลืมกดคัดลอกข้อมูลสำรองเก็บไว้`);
 };
 
+/* ================= cross-device sync (private GitHub repo) ================= */
+// One JSON file holds every synced key with its last-write time; merges keep the newest per key.
+const SY = {cfg: store.get('cp.sync', null), timer: null, busy: false, again: false, last: null, err: null};
+const SYNC_FILE = 'songs.json';
+const b64e = s => btoa(unescape(encodeURIComponent(s)));
+const b64d = s => decodeURIComponent(escape(atob(s.replace(/\s/g, ''))));
+function syncTouch(k) {
+  try { const m = store.get('cp.ts', {}); m[k] = Date.now(); store.set('cp.ts', m); if (SY.cfg) { clearTimeout(SY.timer); SY.timer = setTimeout(syncNow, 1500); setSyncUI('รอส่งขึ้น GitHub…'); } } catch (e) {}
+}
+function applyRaw(k, v) {
+  if (v == null) { delete mem[k]; try { localStorage.removeItem(k); } catch (e) {} }
+  else { mem[k] = v; try { localStorage.setItem(k, JSON.stringify(v)); } catch (e) {} }
+}
+function localItems() {
+  const m = store.get('cp.ts', {}); let add = false;
+  store.keys().filter(SYNC_KEY).forEach(k => { if (!m[k]) { m[k] = 1; add = true; } });
+  if (add) store.set('cp.ts', m);
+  const items = {}; for (const k in m) if (SYNC_KEY(k)) items[k] = {t: m[k], v: store.get(k, null)};
+  return items;
+}
+function ghFetch(opt) {
+  return fetch(`https://api.github.com/repos/${SY.cfg.repo}/contents/${SYNC_FILE}` + (opt ? '' : `?t=${Date.now()}`), Object.assign({cache: 'no-store'}, opt || {}, {
+    headers: Object.assign({Authorization: 'Bearer ' + SY.cfg.token, Accept: 'application/vnd.github+json'}, opt && opt.body ? {'Content-Type': 'application/json'} : {})}));
+}
+async function syncNow() {
+  if (!SY.cfg) return;
+  if (SY.busy) { SY.again = true; return; }
+  SY.busy = true; clearTimeout(SY.timer); setSyncUI('กำลังซิงก์…');
+  try {
+    for (let attempt = 0; attempt < 3; attempt++) {
+      const r = await ghFetch();
+      let remote = {items: {}}, sha = null;
+      if (r.status === 200) { const j = await r.json(); sha = j.sha; remote = JSON.parse(b64d(j.content)); remote.items = remote.items || {}; }
+      else if (r.status === 401) throw new Error('โทเคนไม่ถูกต้องหรือหมดอายุ');
+      else if (r.status !== 404) throw new Error('GitHub ตอบกลับ ' + r.status);
+      const local = localItems(), m = store.get('cp.ts', {}); let pulled = 0, needPush = false;
+      for (const [k, it] of Object.entries(remote.items)) {
+        if (!SYNC_KEY(k)) continue;
+        if (!local[k] || it.t > local[k].t) { applyRaw(k, it.v); m[k] = it.t; pulled++; }
+      }
+      store.set('cp.ts', m);
+      for (const [k, it] of Object.entries(local)) { const rt = remote.items[k]; if (!rt || it.t > rt.t) needPush = true; }
+      if (pulled) { userSongs = store.get('cp.user', []); loadSong(findSong(songId) ? songId : GIGS[0].songs[0].id, true); }
+      if (!needPush) break;
+      const body = JSON.stringify({message: 'sync ' + new Date().toISOString(), content: b64e(JSON.stringify({app: 'chordploen', v: 2, items: localItems()})), ...(sha ? {sha} : {})});
+      const w = await ghFetch({method: 'PUT', body});
+      if (w.ok) break;
+      if ((w.status === 409 || w.status === 422) && attempt < 2) continue;
+      throw new Error(w.status === 404 || w.status === 403 ? 'ไม่พบ repo หรือโทเคนไม่มีสิทธิ์เขียน' : 'บันทึกไม่สำเร็จ (' + w.status + ')');
+    }
+    SY.last = new Date(); SY.err = null;
+  } catch (e) { SY.err = e && e.message && !/fetch|network|load/i.test(e.message) ? e.message : 'เชื่อมต่อ GitHub ไม่ได้ (ตรวจอินเทอร์เน็ต)'; }
+  SY.busy = false; setSyncUI();
+  if (SY.again) { SY.again = false; syncNow(); }
+}
+function setSyncUI(msg) {
+  const d = $('#sync-dot'), t = $('#sync-txt');
+  if (!SY.cfg) { d.className = 'sdot'; t.textContent = 'ยังไม่ได้เชื่อมซิงก์ข้ามเครื่อง ข้อมูลอยู่ในเครื่องนี้เท่านั้น'; return; }
+  if (msg) { d.className = 'sdot busy'; t.textContent = msg; return; }
+  if (SY.err) { d.className = 'sdot err'; t.textContent = 'ซิงก์ไม่สำเร็จ: ' + SY.err; return; }
+  d.className = 'sdot ok'; t.textContent = 'ซิงก์กับ GitHub แล้ว' + (SY.last ? ' · ' + SY.last.toLocaleTimeString('th-TH', {hour: '2-digit', minute: '2-digit'}) : '');
+}
+const canSync = /github\.io$|^localhost$|^127\.0\.0\.1$/.test(location.hostname);
+$('#sync-open').onclick = () => {
+  $('#sync-where').hidden = canSync; $('#sync-go').disabled = !canSync;
+  if (SY.cfg) $('#sync-repo').value = SY.cfg.repo;
+  $('#sync-token').value = ''; $('#sync-token').placeholder = SY.cfg ? 'เชื่อมอยู่แล้ว · วางโทเคนใหม่ถ้าต้องการเปลี่ยน' : 'github_pat_...';
+  $('#sync-off').hidden = !SY.cfg; $('#sync').hidden = false;
+};
+$('#sync-close').onclick = () => $('#sync').hidden = true;
+$('#sync-go').onclick = async () => {
+  const repo = $('#sync-repo').value.trim(), token = $('#sync-token').value.trim() || (SY.cfg && SY.cfg.token);
+  if (!/^[\w.-]+\/[\w.-]+$/.test(repo)) { $('#sync-msg').textContent = 'ใส่ชื่อ repo แบบ ชื่อบัญชี/ชื่อrepo'; return; }
+  if (!token) { $('#sync-msg').textContent = 'วางโทเคนก่อน แล้วค่อยกดเชื่อมต่อ'; return; }
+  SY.cfg = {repo, token}; store.set('cp.sync', SY.cfg);
+  $('#sync-msg').textContent = 'กำลังเชื่อมต่อ…'; await syncNow();
+  if (SY.err) { $('#sync-msg').textContent = 'เชื่อมไม่สำเร็จ: ' + SY.err; return; }
+  $('#sync').hidden = true; toast('เชื่อม GitHub แล้ว ข้อมูลจะตามไปทุกเครื่องที่ตั้งค่าไว้');
+};
+$('#sync-off').onclick = () => { SY.cfg = null; store.del('cp.sync'); $('#sync').hidden = true; setSyncUI(); toast('เลิกเชื่อมในเครื่องนี้แล้ว ข้อมูลบน GitHub ยังอยู่ครบ'); };
+document.addEventListener('visibilitychange', () => { if (document.visibilityState === 'visible' && SY.cfg) syncNow(); });
+
 // backup / restore
-$('#backup').onclick = () => { const data = {}; store.keys().forEach(k => data[k] = store.get(k, null)); copyText(JSON.stringify({app: 'chordploen', v: 1, data}), 'คัดลอกข้อมูลสำรองแล้ว เก็บไว้ในโน้ตหรือส่งให้ตัวเองในไลน์'); };
+$('#backup').onclick = () => { const data = {}; store.keys().filter(k => k !== 'cp.sync' && k !== 'cp.ts').forEach(k => data[k] = store.get(k, null)); copyText(JSON.stringify({app: 'chordploen', v: 1, data}), 'คัดลอกข้อมูลสำรองแล้ว เก็บไว้ในโน้ตหรือส่งให้ตัวเองในไลน์'); };
 $('#restore').onclick = () => { $('#io-h').textContent = 'กู้คืนข้อมูล'; $('#io-msg').textContent = 'วางข้อมูลสำรองที่เคยคัดลอกไว้ แล้วกดกู้คืน คอร์ดที่มีอยู่จะถูกแทนที่ด้วยข้อมูลชุดนี้'; $('#io-text').value = ''; $('#io-go').hidden = false; $('#io').hidden = false; $('#io-text').focus(); };
 $('#io-close').onclick = () => $('#io').hidden = true;
 $('#io-go').onclick = () => {
   try { const j = JSON.parse($('#io-text').value); if (j.app !== 'chordploen' || !j.data) throw 0;
-    Object.entries(j.data).forEach(([k, v]) => k.startsWith('cp.') && store.set(k, v));
+    Object.entries(j.data).forEach(([k, v]) => k.startsWith('cp.') && k !== 'cp.sync' && k !== 'cp.ts' && store.set(k, v));
     userSongs = store.get('cp.user', []); $('#io').hidden = true; loadSong(songId); toast('กู้คืนข้อมูลแล้ว');
   } catch (e) { $('#io-msg').textContent = 'ข้อมูลนี้อ่านไม่ได้ ตรวจว่าคัดลอกมาครบตั้งแต่ { จนถึง }'; }
 };
 
 loadSong(songId);
+setSyncUI(); if (SY.cfg) syncNow();
 })();
 </script>
 </body>
