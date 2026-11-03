@@ -13,4 +13,5 @@ OUT=index.html
   awk 'BEGIN{h=1} { if(!h) print; if(h && /<\/style>/) h=0 }' "$SRC"
   printf '</body>\n</html>\n'
 } > "$OUT"
-echo "built $OUT"
+mkdir -p dist && cp "$OUT" dist/index.html
+echo "built $OUT and dist/index.html"

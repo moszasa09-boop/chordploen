@@ -2,7 +2,9 @@
 
 เว็บดูคอร์ดสำหรับเล่นบนเวที อยู่ครบในไฟล์เดียว ไม่ต้องติดตั้งอะไร
 
-**เปิดใช้งาน:** https://moszasa09-boop.github.io/chordploen/
+**เปิดใช้งาน:** https://chordploen.pages.dev/ (Cloudflare Pages, ซิงก์ข้ามเครื่องได้)
+
+สำรอง: https://moszasa09-boop.github.io/chordploen/ (ใช้ได้ แต่ไม่ซิงก์)
 
 ## ฟีเจอร์
 
@@ -18,9 +20,11 @@
 
 | ไฟล์ | ใช้ทำอะไร |
 |---|---|
-| `index.html` | ตัวเว็บที่ GitHub Pages เปิดให้ และดับเบิลคลิกเปิดใช้แบบ offline ได้ |
+| `index.html` | ตัวเว็บ (GitHub Pages ใช้ไฟล์นี้) ดับเบิลคลิกเปิดใช้แบบ offline ได้ |
+| `functions/api/sync.js` | API ซิงก์บน Cloudflare Pages Functions เก็บข้อมูลใน KV `CHORDPLOEN` |
+| `wrangler.toml` | ตั้งค่า Cloudflare Pages + KV |
 | `src/page.html` | ซอร์สต้นฉบับ แก้ไขที่ไฟล์นี้ (ใช้เผยแพร่บน Claude ด้วย) |
-| `scripts/build.sh` | สร้าง `index.html` จาก `src/page.html` |
+| `scripts/build.sh` | สร้าง `index.html` และ `dist/index.html` จาก `src/page.html` |
 
 ดาวน์โหลดทั้งหมดได้จากปุ่ม **Code → Download ZIP** บนหน้า GitHub
 
@@ -28,25 +32,18 @@
 
 ```bash
 ./scripts/build.sh
-git add -A && git commit -m "อัปเดตเพลง" && git push
+npx wrangler pages deploy --branch main      # ขึ้น Cloudflare
+git add -A && git commit -m "อัปเดตเพลง" && git push   # เก็บซอร์ส + GitHub Pages
 ```
 
-GitHub Pages จะอัปเดตเว็บเองภายใน 1–2 นาที
+## ซิงก์ข้ามเครื่อง
 
-## ซิงก์ข้ามเครื่อง (เก็บข้อมูลบน GitHub)
-
-เนื้อร้องและคอร์ดที่บันทึกในเว็บเก็บไว้ใน repo **ส่วนตัว** `moszasa09-boop/chordploen-data` (ไฟล์ `songs.json`) เปิดจากเครื่องไหนก็เห็นชุดเดียวกัน
-
-ตั้งค่าครั้งเดียวต่อเครื่อง:
-1. สร้าง fine-grained token ที่ https://github.com/settings/personal-access-tokens/new
-   - Repository access: **Only select repositories → chordploen-data**
-   - Permissions → Contents: **Read and write**
-2. ในเว็บ กด **ตั้งค่าซิงก์** (แถบซ้ายล่าง) วางโทเคน แล้วกด **เชื่อมต่อ**
-
-โทเคนเก็บไว้ในเบราว์เซอร์ของเครื่องนั้นเท่านั้น และใช้เข้าถึงได้แค่ repo ข้อมูลนี้ ถ้าเครื่องหายให้ลบโทเคนที่หน้า GitHub ได้ทันที
+- เข้าสู่ระบบในเว็บ (แถบซ้ายล่าง) ด้วยอีเมลและรหัสผ่านเดียวกับหน้า /admin ของ Nattpong Property (Supabase Auth)
+- เนื้อร้อง/คอร์ด/คีย์ที่บันทึกถูกส่งไป `/api/sync` แล้วเก็บใน Cloudflare KV แยกตามบัญชี เปิดเครื่องไหนก็ดึงชุดเดียวกัน
+- แต่ละรายการมีเวลาบันทึกกำกับ ถ้าแก้ซ้อนกันหลายเครื่อง อันที่บันทึกล่าสุดชนะ
 
 ## ข้อควรรู้
 
-- **ไม่มีเนื้อร้องใน repo สาธารณะนี้** เพราะเนื้อเพลงมีลิขสิทธิ์ ผู้ใช้วางเองจากหน้าเว็บคอร์ด และเก็บไว้ใน repo ส่วนตัวเท่านั้น
-- ถ้ายังไม่ได้ตั้งค่าซิงก์ เนื้อร้องจะเก็บในเบราว์เซอร์ของเครื่องนั้นเท่านั้น
+- **ไม่มีเนื้อร้องใน repo สาธารณะนี้** เพราะเนื้อเพลงมีลิขสิทธิ์ ผู้ใช้วางเองจากหน้าเว็บคอร์ด และเก็บไว้ในบัญชีของตัวเองบน Cloudflare เท่านั้น
+- ถ้ายังไม่ได้เข้าสู่ระบบ เนื้อร้องจะเก็บในเบราว์เซอร์ของเครื่องนั้นเท่านั้น
 - ชาร์ตคอร์ดมาจากเว็บที่ผู้ใช้ส่งคอร์ดเข้ามาเอง ควรลองเทียบกับเพลงจริงก่อนเล่น

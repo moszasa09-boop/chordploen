@@ -1,0 +1,7 @@
+name = "chordploen"
+pages_build_output_dir = "dist"
+compatibility_date = "2025-10-01"
+
+[[kv_namespaces]]
+binding = "CHORDPLOEN"
+id = "86bf323637f440a2b1dbb94b5b3e3af9"
