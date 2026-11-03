@@ -1,0 +1,1765 @@
+<title>คอร์ดเพลิน</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Anuphan:wght@400;500;600&family=Chakra+Petch:wght@500;600;700&family=JetBrains+Mono:wght@500;700&display=swap">
+<style>
+/* Layout: setlist/library rail on the left, a sticky control bar over the chord sheet on the right; the rail becomes a drawer on phones. */
+:root{
+  --bg:#F8F9FB; --panel:#FFFFFF; --panel-2:#EEF0F4; --line:#DCE0E7;
+  --fg:#14171D; --muted:#555C6B;
+  --chord:#B04F0C; --chord-soft:rgba(176,79,12,.09);
+  --accent:#16747C; --accent-fg:#FFFFFF; --accent-soft:rgba(22,116,124,.12);
+  --slow:#3567C8; --mid:#2F8A5B; --fast:#C2482B;
+  --sing-a:#5B4BC4; --sing-b:#B4541E;
+  --font-display:'Chakra Petch','Anuphan',system-ui,sans-serif;
+  --font-body:'Anuphan','Noto Sans Thai',system-ui,sans-serif;
+  --font-mono:'JetBrains Mono',ui-monospace,Menlo,monospace;
+  --fs:1.2rem;
+}
+/* Light-only by request: bright on stage and in daylight, whatever the device theme. */
+:root{color-scheme:light}
+*{box-sizing:border-box}
+[hidden]{display:none!important}
+html,body{background:var(--bg);color:var(--fg)}
+body{font-family:var(--font-body);font-size:15px;line-height:1.5}
+body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset-top,0px);z-index:10;background:var(--panel)}
+button,input,select,textarea{font:inherit;color:inherit}
+button{cursor:pointer}
+:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+.app{display:grid;grid-template-columns:320px minmax(0,1fr);min-height:100%}
+
+/* ---------- rail ---------- */
+.lib{position:sticky;top:0;height:100vh;overflow:auto;background:var(--panel);border-right:1px solid var(--line);padding-block:18px 24px;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:16px;display:flex;flex-direction:column;gap:14px}
+.brand{display:flex;align-items:center;gap:10px}
+.brand svg{flex:none}
+.brand strong{font-family:var(--font-display);font-size:1.35rem;letter-spacing:.01em;line-height:1}
+.brand small{display:block;color:var(--muted);font-size:.78rem}
+.brand .x{margin-left:auto;display:none}
+.tabs{display:grid;grid-template-columns:1fr 1fr;background:var(--panel-2);border-radius:10px;padding:3px}
+.tabs button{border:0;background:none;padding:7px 0;border-radius:8px;font-weight:600;color:var(--muted)}
+.tabs button[aria-selected="true"]{background:var(--panel);color:var(--fg);box-shadow:0 1px 2px rgba(0,0,0,.12)}
+.gigs{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.gig{border:1px solid var(--line);background:var(--panel);border-radius:10px;padding:8px 10px;text-align:left;min-width:0}
+.gig b{font-family:var(--font-display);font-size:1.05rem;display:block;line-height:1.1}
+.gig span{font-size:.78rem;color:var(--muted);display:block;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.gig[aria-pressed="true"]{border-color:var(--accent);background:var(--accent-soft)}
+.gighead h2{font-family:var(--font-display);font-size:1.2rem;margin:0;line-height:1.2;text-wrap:balance}
+.gighead p{margin:2px 0 0;color:var(--muted);font-size:.85rem}
+.flow{display:flex;align-items:flex-end;gap:4px;height:74px;padding-top:14px;border-bottom:1px solid var(--line)}
+.flow button{flex:1;border:0;padding:0;background:none;display:flex;flex-direction:column;align-items:center;justify-content:flex-end;height:100%;gap:2px;min-width:0}
+.flow i{display:block;width:100%;border-radius:3px 3px 0 0;background:var(--c);opacity:.85}
+.flow button.cur i{opacity:1;outline:2px solid var(--fg);outline-offset:1px}
+.flow small{font-family:var(--font-mono);font-size:.62rem;color:var(--muted)}
+.legend{display:flex;gap:10px;font-size:.74rem;color:var(--muted);flex-wrap:wrap}
+.legend span::before{content:"";display:inline-block;width:8px;height:8px;border-radius:2px;background:var(--c);margin-right:4px}
+.list{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:6px}
+.row{width:100%;display:grid;grid-template-columns:22px minmax(0,1fr) auto;gap:8px;align-items:center;text-align:left;border:1px solid var(--line);border-left:4px solid var(--c,var(--line));background:var(--panel);border-radius:10px;padding:8px 10px}
+.row:hover{background:var(--panel-2)}
+.row.cur{border-color:var(--accent);border-left-color:var(--c,var(--accent));background:var(--accent-soft)}
+.row .n{font-family:var(--font-display);font-weight:700;color:var(--muted);font-size:1.05rem;text-align:center}
+.row .t{font-weight:600;line-height:1.25;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.row .a{font-size:.78rem;color:var(--muted);display:flex;gap:5px;align-items:center;flex-wrap:wrap}
+.row .bpm{font-family:var(--font-display);font-weight:700;font-size:1.25rem;color:var(--c,var(--fg));line-height:1;text-align:right}
+.row .bpm small{display:block;font-family:var(--font-body);font-size:.62rem;color:var(--muted);font-weight:500}
+.dot{width:7px;height:7px;border-radius:50%;background:var(--line);display:inline-block}
+.dot.ok{background:var(--mid)}
+.sing{display:inline-block;font-size:.7rem;font-weight:600;padding:0 7px;border-radius:99px;border:1px solid var(--s);color:var(--s);line-height:1.5}
+.search{width:100%;padding:8px 11px;border:1px solid var(--line);border-radius:9px;background:var(--bg)}
+.newbtn{border:1px dashed var(--accent);color:var(--accent);background:none;border-radius:9px;padding:8px;font-weight:600}
+.libfoot{margin-top:auto;display:flex;flex-direction:column;gap:8px;font-size:.78rem;color:var(--muted);border-top:1px solid var(--line);padding-top:12px}
+.libfoot .btns{display:flex;gap:6px;flex-wrap:wrap}
+kbd{font-family:var(--font-mono);font-size:.7rem;border:1px solid var(--line);border-bottom-width:2px;border-radius:4px;padding:0 4px;background:var(--bg)}
+.empty-note{font-size:.85rem;color:var(--muted);border:1px dashed var(--line);border-radius:10px;padding:12px}
+
+/* ---------- main ---------- */
+.main{min-width:0;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));padding-block:0 120px}
+.songhead{display:flex;gap:14px;align-items:flex-start;flex-wrap:wrap;padding-top:22px}
+.titles{flex:1;min-width:0}
+.eyebrow{margin:0;font-size:.78rem;letter-spacing:.06em;text-transform:uppercase;color:var(--muted);font-weight:600}
+h1{font-family:var(--font-display);font-size:clamp(1.7rem,4vw,2.5rem);line-height:1.35;margin:4px 0 8px;text-wrap:balance}
+.chips{display:flex;gap:6px;flex-wrap:wrap;align-items:center}
+.chip{font-size:.8rem;padding:2px 9px;border-radius:99px;background:var(--panel-2);color:var(--fg);white-space:nowrap}
+.chip.k{font-family:var(--font-mono);font-weight:700;background:var(--chord-soft);color:var(--chord)}
+.chip.tempo{color:var(--c);background:transparent;border:1px solid var(--c);font-weight:600}
+.chip.auto{font-size:.7rem;color:var(--muted);background:none;border:1px dashed var(--line)}
+a.chip.src{color:var(--accent);background:var(--accent-soft);text-decoration:none;font-weight:600}
+a.chip.src:hover{text-decoration:underline}
+.prepbody{overflow:auto;padding:14px 16px;display:flex;flex-direction:column;gap:12px;min-height:0;flex:1}
+.prepitem{border:1px solid var(--line);border-left:4px solid var(--c,var(--line));border-radius:12px;padding:10px 12px;display:flex;flex-direction:column;gap:8px}
+.prepitem .top{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+.prepitem .top b{font-family:var(--font-display);font-size:1.05rem}
+.prepitem .top .n{font-family:var(--font-display);font-weight:700;color:var(--muted);min-width:1.2em}
+.prepitem .top a{margin-left:auto;text-decoration:none}
+.prepitem textarea{min-height:5.5em}
+.pill{font-size:.72rem;font-weight:600;padding:1px 8px;border-radius:99px;border:1px solid currentColor}
+.pill.ok{color:var(--mid)} .pill.half{color:var(--chord)}
+.pstat{font-size:.8rem;color:var(--muted);min-height:1.2em}
+.pstat.ok{color:var(--mid)} .pstat.warn{color:var(--fast)}
+.prepopen{width:100%}
+.dot.half{background:var(--chord)}
+.pastebox{font-size:.9rem;margin:2px 0 14px}
+.pastebox summary{cursor:pointer;display:inline-block;border:1px solid var(--accent);color:var(--accent);background:var(--accent-soft);border-radius:99px;padding:4px 12px;font-weight:600;list-style:none}
+.pastebox summary::-webkit-details-marker{display:none}
+.pastebox .emptysong{margin-top:10px}
+.emptysong a{color:var(--accent);font-weight:600}
+/* stage: bigger, bolder, higher contrast for reading from a mic stand */
+body.stage .sheet{font-size:calc(var(--fs) * 1.25)}
+body.stage .ly{font-weight:500;color:var(--fg)}
+body.stage .ch{font-size:.9em;letter-spacing:.01em}
+body.stage .ln.has{margin-top:.45em}
+body.stage .pastebox,body.stage .strip,body.stage .chips,body.stage .eyebrow{display:none}
+body.stage h1{margin:0}
+body.stage .toolbar{margin-top:6px}
+.tb:disabled,.ib:disabled{opacity:.35;cursor:default}
+.lbl{white-space:nowrap}
+.actions{display:flex;gap:6px;flex-wrap:wrap}
+.tb,.ib{border:1px solid var(--line);background:var(--panel);border-radius:8px;padding:5px 10px;font-weight:500;font-size:.88rem;white-space:nowrap}
+.ib{min-width:34px;padding:5px 8px;font-family:var(--font-mono);font-weight:700}
+.tb:hover,.ib:hover{border-color:var(--accent)}
+.tb[aria-pressed="true"]{background:var(--accent);border-color:var(--accent);color:var(--accent-fg)}
+.tb.primary{background:var(--accent);border-color:var(--accent);color:var(--accent-fg);font-weight:600}
+.lib-open{display:none}
+
+.toolbar{position:sticky;top:env(safe-area-inset-top,0px);z-index:5;margin-top:14px;background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:8px;display:flex;gap:6px 14px;flex-wrap:wrap;align-items:center;box-shadow:0 6px 18px -12px rgba(0,0,0,.35)}
+.grp{display:flex;align-items:center;gap:5px}
+.lbl{font-size:.72rem;color:var(--muted);font-weight:600;letter-spacing:.04em;margin-right:2px}
+.keybox{display:flex;align-items:center;gap:4px;border:1px solid var(--chord);border-radius:8px;padding:1px 6px 1px 2px;background:var(--chord-soft)}
+.keybox select{border:0;background:transparent;font-family:var(--font-mono);font-weight:700;color:var(--chord);font-size:.95rem;padding:3px 2px}
+.delta{font-family:var(--font-mono);font-size:.75rem;color:var(--chord);min-width:2.2em;text-align:right}
+.num{font-family:var(--font-mono);font-weight:700;min-width:1.4em;text-align:center;font-variant-numeric:tabular-nums}
+.seg2{display:flex;border:1px solid var(--line);border-radius:8px;overflow:hidden}
+.seg2 button{border:0;background:var(--panel);padding:5px 9px;font-size:.86rem;white-space:nowrap}
+.seg2 button+button{border-left:1px solid var(--line)}
+.seg2 button[aria-pressed="true"]{background:var(--fg);color:var(--bg);font-weight:600}
+.play{display:flex;align-items:center;gap:6px;border:0;background:var(--accent);color:var(--accent-fg);border-radius:8px;padding:6px 11px;font-weight:600;font-size:.88rem}
+.play svg{width:12px;height:12px;fill:currentColor}
+#speed{width:84px;accent-color:var(--accent)}
+.led{width:12px;height:12px;border-radius:50%;background:var(--panel-2);border:1px solid var(--line);transition:background .06s}
+.led.hit{background:var(--mid);box-shadow:0 0 10px var(--mid)}
+.led.hit.acc{background:var(--chord);box-shadow:0 0 12px var(--chord)}
+.metro[aria-pressed="true"]{background:var(--mid);border-color:var(--mid);color:#fff}
+
+.suggest{display:flex;gap:6px;align-items:center;flex-wrap:wrap;margin-top:10px;font-size:.84rem;color:var(--muted)}
+.suggest button{border:1px solid var(--accent);background:var(--accent-soft);color:var(--fg);border-radius:99px;padding:2px 10px;font-size:.82rem}
+.suggest button b{font-family:var(--font-mono);color:var(--chord)}
+.suggest .ok{color:var(--mid);font-weight:600}
+
+.strip{display:flex;gap:8px;overflow-x:auto;padding:12px 2px 10px;margin-top:6px;scrollbar-width:thin}
+.card{flex:none;border:1px solid var(--line);background:var(--panel);border-radius:10px;padding:6px 8px 4px;text-align:center;min-width:84px}
+.card:hover{border-color:var(--chord)}
+.card .nm{font-family:var(--font-mono);font-weight:700;color:var(--chord);font-size:.95rem;line-height:1.2}
+.card .sub{font-size:.66rem;color:var(--muted);line-height:1.2;min-height:1.2em}
+.card svg{display:block;margin:2px auto 0}
+
+/* diagrams */
+.fb-line{stroke:var(--muted);stroke-width:1}
+.fb-nut{stroke:var(--fg);stroke-width:3}
+.fb-dot{fill:var(--chord)}
+.fb-root{fill:var(--fg)}
+.fb-open{fill:none;stroke:var(--muted);stroke-width:1.2}
+.fb-txt{fill:var(--muted);font-family:var(--font-mono);font-size:8px}
+.pk-w{fill:var(--panel);stroke:var(--muted);stroke-width:.8}
+.pk-b{fill:var(--fg)}
+.pk-on{fill:var(--chord)}
+.pk-root{fill:var(--accent)}
+
+/* ---------- sheet ---------- */
+.sheet{font-size:var(--fs);margin-top:8px}
+.sheet.cols2{columns:2;column-gap:3rem}
+.block{break-inside:avoid;margin-bottom:1.1em}
+.sec{font-family:var(--font-display);font-size:.72em;font-weight:600;letter-spacing:.08em;text-transform:uppercase;color:var(--accent);margin:0 0 .3em;display:flex;align-items:center;gap:.6em}
+.sec::after{content:"";flex:1;height:1px;background:var(--line)}
+.ln{line-height:1.3;margin:.1em 0}
+.ln.has{margin-top:.25em}
+.seg{display:inline-flex;flex-direction:column;vertical-align:bottom;max-width:100%}
+.ch{display:block;min-height:1.35em;font-family:var(--font-mono);font-weight:700;font-size:.8em;color:var(--chord);padding-right:.55em;white-space:nowrap;cursor:pointer;line-height:1.6}
+.ch:empty{cursor:default}
+.ch:not(:empty):hover{text-decoration:underline;text-underline-offset:3px}
+.ch.raw{color:var(--muted);cursor:default}
+.ly{white-space:pre-wrap}
+.ly:empty::after{content:"\00a0"}
+.ln.co .ly{display:none}
+.ln.co .seg{margin-right:.9em}
+.ln.co .ch{font-size:.9em;padding:.1em .5em;background:var(--chord-soft);border-radius:6px;margin-bottom:.2em}
+.gap{height:.7em}
+
+.emptysong{margin-top:18px;border:1px solid var(--line);background:var(--panel);border-radius:14px;padding:18px;display:flex;flex-direction:column;gap:12px;max-width:760px}
+.emptysong h3{font-family:var(--font-display);margin:0;font-size:1.2rem}
+.emptysong p{margin:0;color:var(--muted);max-width:62ch}
+.emptysong ol{margin:0;padding-left:1.2em;color:var(--muted);font-size:.9rem}
+textarea{width:100%;border:1px solid var(--line);border-radius:10px;background:var(--bg);padding:10px 12px;font-family:var(--font-mono);font-size:.85rem;line-height:1.55;resize:vertical}
+.row2{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+
+.nextup{margin-top:28px;display:grid;grid-template-columns:1fr 1fr;gap:10px;max-width:760px}
+.nav{border:1px solid var(--line);background:var(--panel);border-radius:12px;padding:10px 14px;text-align:left;min-width:0}
+.nav:hover{border-color:var(--accent)}
+.nav small{color:var(--muted);font-size:.75rem;display:block}
+.nav b{font-family:var(--font-display);font-size:1.1rem;display:block;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.nav span{font-size:.8rem;color:var(--muted)}
+.nav.next{text-align:right;border-color:var(--accent)}
+.nav[disabled]{opacity:.35;cursor:default}
+
+.progress{position:fixed;left:0;right:0;top:0;height:3px;z-index:20;pointer-events:none}
+.progress i{display:block;height:100%;width:0;background:var(--accent)}
+
+/* popover + modal + toast */
+.pop{position:absolute;z-index:30;background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:10px 12px;box-shadow:0 14px 34px -14px rgba(0,0,0,.45);text-align:center;width:180px}
+.pop .nm{font-family:var(--font-mono);font-weight:700;color:var(--chord);font-size:1.3rem}
+.pop .sub{font-size:.75rem;color:var(--muted)}
+.pop svg{width:140px;height:auto;margin:4px auto;display:block}
+.pop .tb{margin-top:4px}
+.modal{position:fixed;inset:0;z-index:40;background:rgba(10,12,16,.55);display:flex;align-items:center;justify-content:center;padding:max(16px,env(safe-area-inset-top,0px)) max(16px,env(safe-area-inset-right,0px)) max(16px,env(safe-area-inset-bottom,0px)) max(16px,env(safe-area-inset-left,0px))}
+.dialog{background:var(--panel);border-radius:14px;border:1px solid var(--line);width:min(1100px,100%);max-height:100%;display:flex;flex-direction:column;overflow:hidden}
+.dialog header{display:flex;align-items:center;gap:10px;padding:12px 16px;border-bottom:1px solid var(--line)}
+.dialog header h3{font-family:var(--font-display);margin:0;font-size:1.1rem;flex:1}
+.dialog .body{display:grid;grid-template-columns:1fr 1fr;gap:0;min-height:0;flex:1;overflow:hidden}
+.dialog .body>*{min-width:0;overflow:auto;padding:14px 16px}
+.dialog .body textarea{height:100%;min-height:340px}
+.dialog .prev{border-left:1px solid var(--line);font-size:1rem}
+.dialog footer{display:flex;gap:8px;align-items:center;padding:10px 16px;border-top:1px solid var(--line);flex-wrap:wrap}
+.dialog footer .hint{flex:1;font-size:.78rem;color:var(--muted);min-width:200px}
+.toast{position:fixed;left:50%;bottom:calc(24px + env(safe-area-inset-bottom,0px));transform:translateX(-50%);background:var(--fg);color:var(--bg);padding:8px 16px;border-radius:99px;font-size:.88rem;z-index:50;max-width:calc(100% - 32px)}
+
+/* stage mode */
+.stagebar{display:none}
+body.stage .lib,body.stage .actions,body.stage .suggest,body.stage .grp:not(.core),body.stage .lib-open{display:none!important}
+body.stage .app{grid-template-columns:minmax(0,1fr)}
+body.stage h1{font-size:1.8rem}
+body.stage .songhead{padding-top:10px}
+body.stage .stagebar{display:flex;position:fixed;left:0;right:0;bottom:0;z-index:15;gap:8px;align-items:center;background:var(--panel);border-top:1px solid var(--line);padding:8px max(16px,env(safe-area-inset-right,0px)) calc(8px + env(safe-area-inset-bottom,0px)) max(16px,env(safe-area-inset-left,0px))}
+.stagebar .info{flex:1;min-width:0;font-size:.85rem;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;text-align:center}
+.stagebar .info b{color:var(--fg)}
+
+@media (max-width:900px){
+  .app{grid-template-columns:minmax(0,1fr)}
+  .lib{position:fixed;inset:0 auto 0 0;width:min(360px,88vw);z-index:35;transform:translateX(-105%);transition:transform .2s;box-shadow:0 0 40px rgba(0,0,0,.4);padding-top:calc(18px + env(safe-area-inset-top,0px));padding-bottom:calc(24px + env(safe-area-inset-bottom,0px))}
+  .lib.open{transform:none}
+  .brand .x{display:inline-block}
+  .lib-open{display:inline-block}
+  .toolbar{flex-wrap:nowrap;overflow-x:auto;border-radius:10px}
+  .sheet.cols2{columns:1}
+  .dialog .body{grid-template-columns:1fr}
+  .dialog .prev{display:none}
+}
+@media (prefers-reduced-motion:reduce){.lib{transition:none}}
+</style>
+
+<div class="progress" aria-hidden="true"><i id="prog"></i></div>
+<div class="app">
+  <aside class="lib" id="lib" aria-label="เซ็ตลิสต์และคลังเพลง">
+    <div class="brand">
+      <svg width="34" height="34" viewBox="0 0 34 34" aria-hidden="true"><rect x="1" y="1" width="32" height="32" rx="8" fill="var(--fg)"/><g stroke="var(--bg)" stroke-width="1.2"><line x1="10" y1="8" x2="10" y2="27"/><line x1="15" y1="8" x2="15" y2="27"/><line x1="20" y1="8" x2="20" y2="27"/><line x1="25" y1="8" x2="25" y2="27"/><line x1="8" y1="13" x2="27" y2="13"/><line x1="8" y1="19" x2="27" y2="19"/></g><rect x="8" y="7" width="19" height="2.5" fill="var(--bg)"/><circle cx="15" cy="16" r="2.6" fill="var(--chord)"/><circle cx="25" cy="22" r="2.6" fill="var(--chord)"/></svg>
+      <div><strong>คอร์ดเพลิน</strong><small>คอร์ด · เซ็ตลิสต์ · โหมดเวที</small></div>
+      <button class="tb x" id="lib-close" aria-label="ปิดคลังเพลง">ปิด</button>
+    </div>
+    <div class="tabs" role="tablist">
+      <button role="tab" id="tab-set" aria-selected="true">เซ็ตลิสต์</button>
+      <button role="tab" id="tab-lib" aria-selected="false">คลังเพลง</button>
+    </div>
+    <div id="pane-set"></div>
+    <div id="pane-lib" hidden>
+      <div style="display:flex;flex-direction:column;gap:10px">
+        <input class="search" id="q" type="search" placeholder="ค้นหาเพลง หรือศิลปิน" aria-label="ค้นหาเพลง">
+        <button class="newbtn" id="new">+ เพิ่มเพลงใหม่ (วางคอร์ดได้เลย)</button>
+        <ul class="list" id="list"></ul>
+      </div>
+    </div>
+    <div class="libfoot">
+      <div><kbd>[</kbd> <kbd>]</kbd> ลด/เพิ่มคีย์ · <kbd>Space</kbd> เลื่อน · <kbd>M</kbd> คลิก · <kbd>←</kbd> <kbd>→</kbd> เพลงก่อน/ถัดไป · <kbd>S</kbd> โหมดเวที</div>
+      <div>คอร์ดที่วางไว้เก็บในเบราว์เซอร์เครื่องนี้เท่านั้น ควรสำรองเก็บไว้ก่อนวันเล่น</div>
+      <div class="btns"><button class="tb" id="backup">คัดลอกข้อมูลสำรอง</button><button class="tb" id="restore">กู้คืน</button></div>
+    </div>
+  </aside>
+
+  <main class="main" id="main">
+    <header class="songhead">
+      <button class="tb lib-open" id="lib-open">☰ เซ็ตลิสต์</button>
+      <div class="titles">
+        <p class="eyebrow" id="s-eyebrow"></p>
+        <h1 id="s-title"></h1>
+        <div class="chips" id="s-chips"></div>
+      </div>
+      <div class="actions">
+        <button class="tb" id="copy">คัดลอกในคีย์นี้</button>
+        <button class="tb" id="edit">แก้ไขคอร์ด</button>
+      </div>
+    </header>
+
+    <div class="toolbar" id="toolbar">
+      <div class="grp core">
+        <span class="lbl">คีย์</span>
+        <button class="ib" id="t-down" title="ลดคีย์ครึ่งเสียง ([)" aria-label="ลดคีย์">−</button>
+        <div class="keybox"><select id="key-sel" aria-label="เลือกคีย์"></select><span class="delta" id="t-delta">±0</span></div>
+        <button class="ib" id="t-up" title="เพิ่มคีย์ครึ่งเสียง (])" aria-label="เพิ่มคีย์">+</button>
+        <button class="tb" id="t-reset" title="กลับคีย์เดิม">เดิม</button>
+      </div>
+      <div class="grp core" id="capo-grp">
+        <span class="lbl">คาโป้</span>
+        <button class="ib" id="c-down" aria-label="ลดคาโป้">−</button>
+        <span class="num" id="capo-n">0</span>
+        <button class="ib" id="c-up" aria-label="เพิ่มคาโป้">+</button>
+      </div>
+      <div class="grp">
+        <div class="seg2" role="group" aria-label="รูปแบบคอร์ด"><button id="m-chord" aria-pressed="true">คอร์ด</button><button id="m-nash" aria-pressed="false" title="ระบบตัวเลข Nashville (N)">ตัวเลข</button></div>
+        <button class="tb" id="simp" aria-pressed="false" title="ตัด 7, sus, add9 ออกให้เหลือคอร์ดพื้นฐาน">ง่ายขึ้น</button>
+      </div>
+      <div class="grp">
+        <div class="seg2" role="group" aria-label="เครื่องดนตรี" id="inst"><button data-inst="guitar">กีตาร์</button><button data-inst="uke">อูคูเลเล่</button><button data-inst="piano">เปียโน</button></div>
+      </div>
+      <div class="grp">
+        <button class="ib" id="f-down" aria-label="ตัวเล็กลง">A−</button>
+        <button class="ib" id="f-up" aria-label="ตัวใหญ่ขึ้น">A+</button>
+        <button class="tb" id="cols" aria-pressed="false">2 คอลัมน์</button>
+      </div>
+      <div class="grp core">
+        <button class="play" id="play" title="เลื่อนอัตโนมัติ (Space)"><svg viewBox="0 0 12 12" id="play-ic"><path d="M2 1l9 5-9 5z"/></svg><span id="play-t">เลื่อน</span></button>
+        <input type="range" id="speed" min="0.4" max="2" step="0.05" value="1" aria-label="ความเร็วเลื่อน">
+        <span class="num" id="speed-v" style="min-width:3em">×1.0</span>
+      </div>
+      <div class="grp core">
+        <button class="tb metro" id="metro" aria-pressed="false" title="คลิกตาม BPM (M)">คลิก <span id="metro-bpm"></span></button>
+        <span class="led" id="led" aria-hidden="true"></span>
+      </div>
+      <div class="grp core"><button class="tb" id="stage" aria-pressed="false">โหมดเวที</button></div>
+    </div>
+
+    <div class="suggest" id="suggest"></div>
+    <div class="strip" id="strip" aria-label="คอร์ดที่ใช้ในเพลง"></div>
+    <article class="sheet" id="sheet"></article>
+    <nav class="nextup" id="nextup"></nav>
+  </main>
+</div>
+
+<div class="stagebar" id="stagebar">
+  <button class="tb" id="sb-prev">◀ ก่อนหน้า</button>
+  <div class="info" id="sb-info"></div>
+  <button class="tb primary" id="sb-next">ถัดไป ▶</button>
+  <button class="tb" id="sb-exit">ออก</button>
+</div>
+
+<div class="pop" id="pop" hidden></div>
+
+<div class="modal" id="editor" hidden>
+  <div class="dialog" role="dialog" aria-labelledby="ed-h">
+    <header><h3 id="ed-h">แก้ไขคอร์ด</h3><button class="tb" id="ed-convert" title="แปลงข้อความแบบคอร์ดอยู่บรรทัดบนเนื้อ ให้เป็นคอร์ดในวงเล็บ">แปลงคอร์ดบนเนื้อ</button><button class="tb" id="ed-close">ปิด</button></header>
+    <div class="body">
+      <div><textarea id="ed-text" spellcheck="false" aria-label="ข้อความคอร์ด"></textarea></div>
+      <div class="prev sheet" id="ed-prev" style="--fs:1rem"></div>
+    </div>
+    <footer>
+      <span class="hint">รูปแบบ: <code>[G]เนื้อร้อง[D]ต่อ</code> · หัวข้อท่อนใช้ <code># ท่อนฮุก</code> · ใส่ <code>{key: G}</code> <code>{tempo: 120}</code> <code>{duration: 4:00}</code> ได้ · วางแบบคอร์ดอยู่บนเนื้อก็ได้ ระบบแปลงให้</span>
+      <button class="tb" id="ed-del" hidden>ลบเพลงนี้</button>
+      <button class="tb primary" id="ed-save">บันทึก</button>
+    </footer>
+  </div>
+</div>
+
+<div class="modal" id="io" hidden>
+  <div class="dialog" role="dialog" aria-labelledby="io-h" style="width:min(640px,100%)">
+    <header><h3 id="io-h">ข้อมูลสำรอง</h3><button class="tb" id="io-close">ปิด</button></header>
+    <div style="padding:14px 16px;display:flex;flex-direction:column;gap:8px;overflow:auto">
+      <p id="io-msg" style="margin:0;color:var(--muted);font-size:.9rem"></p>
+      <textarea id="io-text" rows="12" spellcheck="false" aria-label="ข้อมูลสำรอง"></textarea>
+    </div>
+    <footer><span class="hint"></span><button class="tb primary" id="io-go">กู้คืนข้อมูลนี้</button></footer>
+  </div>
+</div>
+
+<div class="modal" id="prep" hidden>
+  <div class="dialog" role="dialog" aria-labelledby="prep-h" style="width:min(900px,100%)">
+    <header><h3 id="prep-h">เตรียมเนื้อร้องทั้งเซ็ต</h3><button class="tb" id="prep-close">ปิด</button></header>
+    <div class="prepbody" id="prep-list"></div>
+    <footer><span class="hint">กดเปิดหน้า dochord ของแต่ละเพลง → ลากคลุมตั้งแต่บรรทัดแรกจนจบ → คัดลอก → วางในช่องของเพลงนั้น · ช่องที่เว้นว่างไว้จะไม่ถูกแก้</span><button class="tb primary" id="prep-save">บันทึกทั้งหมด</button></footer>
+  </div>
+</div>
+
+<div class="toast" id="toast" hidden></div>
+
+<script>
+(() => {
+'use strict';
+const $ = s => document.querySelector(s);
+const esc = s => String(s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+// localStorage with an in-memory fallback, so the page still works where storage is blocked
+const mem = {};
+const store = {
+  get(k, d) { try { const v = localStorage.getItem(k); return v == null ? d : JSON.parse(v); } catch (e) { return k in mem ? mem[k] : d; } },
+  set(k, v) { mem[k] = v; try { localStorage.setItem(k, JSON.stringify(v)); return true; } catch (e) { return false; } },
+  del(k) { delete mem[k]; try { localStorage.removeItem(k); } catch (e) {} },
+  keys() { try { return Object.keys(localStorage).filter(k => k.startsWith('cp.')); } catch (e) { return Object.keys(mem); } }
+};
+let toastT;
+function toast(msg) { const t = $('#toast'); t.textContent = msg; t.hidden = false; clearTimeout(toastT); toastT = setTimeout(() => t.hidden = true, 2600); }
+
+/* ================= music theory ================= */
+const SHARP = ['C','C#','D','D#','E','F','F#','G','G#','A','A#','B'];
+const FLAT  = ['C','Db','D','Eb','E','F','Gb','G','Ab','A','Bb','B'];
+const LETTER = {C:0, D:2, E:4, F:5, G:7, A:9, B:11};
+const pcOf = s => { let p = LETTER[s[0]]; for (const ch of s.slice(1)) { if (ch === '#' || ch === '♯') p++; else if (ch === 'b' || ch === '♭') p--; } return (p + 12) % 12; };
+
+const QUAL = {
+  '':     {iv:[0,4,7],        simp:'',    shape:'maj'},
+  'm':    {iv:[0,3,7],        simp:'m',   shape:'m'},
+  '7':    {iv:[0,4,7,10],     simp:'',    shape:'7'},
+  'maj7': {iv:[0,4,7,11],     simp:'',    shape:'maj7'},
+  'm7':   {iv:[0,3,7,10],     simp:'m',   shape:'m7'},
+  '6':    {iv:[0,4,7,9],      simp:'',    shape:'6'},
+  'm6':   {iv:[0,3,7,9],      simp:'m',   shape:'m6'},
+  'sus4': {iv:[0,5,7],        simp:'',    shape:'sus4'},
+  'sus2': {iv:[0,2,7],        simp:'',    shape:'sus2'},
+  '7sus4':{iv:[0,5,7,10],     simp:'',    shape:'7sus4'},
+  'dim':  {iv:[0,3,6],        simp:'dim', shape:'dim'},
+  'dim7': {iv:[0,3,6,9],      simp:'dim', shape:'dim7'},
+  'm7b5': {iv:[0,3,6,10],     simp:'dim', shape:'m7b5'},
+  'aug':  {iv:[0,4,8],        simp:'aug', shape:'aug'},
+  'add9': {iv:[0,4,7,2],      simp:'',    shape:'add9'},
+  '9':    {iv:[0,4,7,10,2],   simp:'',    shape:'9'},
+  'm9':   {iv:[0,3,7,10,2],   simp:'m',   shape:'m7',   approx:true},
+  'maj9': {iv:[0,4,7,11,2],   simp:'',    shape:'maj7', approx:true},
+  '11':   {iv:[0,4,7,10,5],   simp:'',    shape:'7sus4',approx:true},
+  '13':   {iv:[0,4,7,10,9],   simp:'',    shape:'7',    approx:true},
+  '5':    {iv:[0,7],          simp:'5',   shape:'5'},
+  'madd9':{iv:[0,3,7,2],      simp:'m',   shape:'m',    approx:true},
+  'mmaj7':{iv:[0,3,7,11],     simp:'m',   shape:'m',    approx:true}
+};
+const QALIAS = {'min':'m','mi':'m','-':'m','M':'','maj':'','M7':'maj7','Maj7':'maj7','ma7':'maj7','Δ':'maj7','Δ7':'maj7','min7':'m7','-7':'m7','mi7':'m7',
+  'sus':'sus4','2':'sus2','add2':'add9','°':'dim','o':'dim','°7':'dim7','o7':'dim7','ø':'m7b5','ø7':'m7b5','m7-5':'m7b5','+':'aug','7sus':'7sus4','M9':'maj9','min6':'m6','m(maj7)':'mmaj7','mM7':'mmaj7'};
+const CHORD_RE = /^([A-G])([#b♯♭]?)([^/\s]*)(?:\/([A-G][#b♯♭]?))?$/;
+function parseChord(str) {
+  const m = CHORD_RE.exec(String(str).trim()); if (!m) return null;
+  let q = m[3]; if (q in QALIAS) q = QALIAS[q];
+  if (!(q in QUAL)) return null;
+  return {root: pcOf(m[1] + m[2]), q, bass: m[4] != null ? pcOf(m[4]) : null};
+}
+const FLAT_MAJ = [5,10,3,8,1];
+const useFlat = (pc, minor) => FLAT_MAJ.includes(minor ? (pc + 3) % 12 : pc);
+const noteName = (pc, flat) => (flat ? FLAT : SHARP)[((pc % 12) + 12) % 12];
+const keyName = (pc, minor) => noteName(pc, useFlat(pc, minor)) + (minor ? 'm' : '');
+function parseKey(s) { const p = parseChord(s); if (!p) return null; return {pc: p.root, minor: p.q === 'm' || p.q === 'm7'}; }
+const chordName = (root, q, bass, flat) => noteName(root, flat) + q + (bass != null ? '/' + noteName(bass, flat) : '');
+const DEG = ['1','b2','2','b3','3','4','b5','5','b6','6','b7','7'];
+
+function detectKey(chords) {
+  const ps = chords.map(parseChord).filter(Boolean); if (!ps.length) return null;
+  const minorish = q => ['m','m7','m6','m9','madd9','mmaj7'].includes(q);
+  const DIA = [[0,'M'],[2,'m'],[4,'m'],[5,'M'],[7,'M'],[9,'m'],[11,'d']];
+  let best = null;
+  for (let t = 0; t < 12; t++) {
+    let s = 0;
+    for (const p of ps) {
+      const d = (p.root - t + 12) % 12; const hit = DIA.find(x => x[0] === d);
+      const kind = ['dim','m7b5','dim7'].includes(p.q) ? 'd' : minorish(p.q) ? 'm' : 'M';
+      s += hit ? (hit[1] === kind ? 1 : 0.35) : -0.6;
+    }
+    const f = ps[0], l = ps[ps.length - 1];
+    if (f.root === t && !minorish(f.q)) s += 1.5;
+    if (l.root === t && !minorish(l.q)) s += 1.5;
+    if (f.root === (t + 9) % 12 && minorish(f.q)) s += 1.2;
+    if (l.root === (t + 9) % 12 && minorish(l.q)) s += 1.2;
+    if (!best || s > best.s) best = {t, s};
+  }
+  const rel = (best.t + 9) % 12, f = ps[0], l = ps[ps.length - 1];
+  const minor = (f.root === rel && minorish(f.q)) && !(l.root === best.t && !minorish(l.q));
+  return minor ? {pc: rel, minor: true} : {pc: best.t, minor: false};
+}
+
+/* ================= voicings ================= */
+const G_OPEN = [40,45,50,55,59,64];
+const DICT = {
+  '0:maj':[-1,3,2,0,1,0], '0:7':[-1,3,2,3,1,0], '0:maj7':[-1,3,2,0,0,0], '0:add9':[-1,3,2,0,3,0], '0:sus4':[-1,3,3,0,1,1], '0:6':[-1,3,2,2,1,0],
+  '2:maj':[-1,-1,0,2,3,2], '2:m':[-1,-1,0,2,3,1], '2:7':[-1,-1,0,2,1,2], '2:m7':[-1,-1,0,2,1,1], '2:maj7':[-1,-1,0,2,2,2], '2:sus4':[-1,-1,0,2,3,3], '2:sus2':[-1,-1,0,2,3,0], '2:6':[-1,-1,0,2,0,2],
+  '7:maj':[3,2,0,0,0,3], '7:7':[3,2,0,0,0,1], '7:maj7':[3,2,0,0,0,2], '7:sus4':[3,3,0,0,1,3], '7:6':[3,2,0,0,0,0], '7:add9':[3,-1,0,2,0,3],
+  '5:maj7':[-1,-1,3,2,1,0], '11:7':[-1,2,1,2,0,2],
+  '0:maj/4':[0,3,2,0,1,0], '7:maj/11':[-1,2,0,0,0,3], '2:maj/6':[2,-1,0,2,3,2], '0:maj/7':[3,3,2,0,1,0], '9:m/7':[3,0,2,2,1,0], '4:m/11':[-1,2,2,0,0,0], '9:maj/1':[-1,4,2,2,2,0], '2:maj/9':[-1,0,0,2,3,2]
+};
+const TE = {maj:[0,2,2,1,0,0], m:[0,2,2,0,0,0], '7':[0,2,0,1,0,0], m7:[0,2,0,0,0,0], maj7:[0,2,1,1,0,0], sus4:[0,2,2,2,0,0], '6':[0,2,2,1,2,0], m6:[0,2,2,0,2,0], '7sus4':[0,2,0,2,0,0], '5':[0,2,2,null,null,null]};
+const TA = {maj:[null,0,2,2,2,0], m:[null,0,2,2,1,0], '7':[null,0,2,0,2,0], m7:[null,0,2,0,1,0], maj7:[null,0,2,1,2,0], sus4:[null,0,2,2,3,0], sus2:[null,0,2,2,0,0], '6':[null,0,2,2,2,2], m6:[null,0,2,2,1,2],
+  dim:[null,0,1,2,1,null], dim7:[null,0,1,2,1,2], m7b5:[null,0,1,0,1,null], aug:[null,0,3,2,2,1], add9:[null,0,2,4,2,0], '9':[null,0,-1,0,0,0], '7sus4':[null,0,2,0,3,0], '5':[null,0,2,2,null,null]};
+const vcache = new Map();
+function guitarVoicing(root, q, bass) {
+  const ck = `g${root}:${q}/${bass}`; if (vcache.has(ck)) return vcache.get(ck);
+  const sk = QUAL[q].shape; let res = null;
+  if (bass != null && DICT[`${root}:${sk}/${bass}`]) res = {frets: DICT[`${root}:${sk}/${bass}`], barre: null, cost: 1, bassOk: true};
+  else if (DICT[`${root}:${sk}`]) res = {frets: DICT[`${root}:${sk}`], barre: null, cost: 1};
+  else {
+    for (const [T, openPc] of [[TE, 4], [TA, 9]]) {
+      const tpl = T[sk]; if (!tpl) continue;
+      const r = (root - openPc + 12) % 12;
+      if (tpl.some(o => o != null && o + r < 0)) continue;
+      const frets = tpl.map(o => o == null ? -1 : o + r);
+      let barre = null;
+      if (r > 0) { const at = frets.map((f, i) => f === r ? i : -1).filter(i => i >= 0); if (at.length >= 2) barre = {fret: r, from: at[0], to: at[at.length - 1]}; }
+      const cost = r === 0 ? 1 : (barre ? 3 : 2) + (r > 7 ? 0.5 : 0);
+      if (!res || cost < res.cost || (cost === res.cost && r < res.r)) res = {frets, barre, cost, r};
+    }
+    if (!res) res = guitarVoicing(root, ['m','m7','m6','dim','m7b5'].includes(q) ? 'm' : '', null);
+  }
+  vcache.set(ck, res); return res;
+}
+const U_PC = [7,0,4,9], U_MIDI = [67,60,64,69];
+function ukeVoicing(root, q) {
+  const ck = `u${root}:${q}`; if (vcache.has(ck)) return vcache.get(ck);
+  const iv = QUAL[q].iv; const set = new Set(iv.map(i => (root + i) % 12));
+  const req = (iv.length >= 4 ? iv.filter(i => i !== 7) : iv).map(i => (root + i) % 12);
+  let best = null;
+  for (let p = 0; p <= 8; p++) {
+    const opts = p === 0 ? [0,1,2,3] : [0, p, p+1, p+2, p+3];
+    const cur = [];
+    (function rec(s) {
+      if (s === 4) {
+        const pcs = cur.map((f, i) => (U_PC[i] + f) % 12);
+        if (!req.every(r => pcs.includes(r))) return;
+        const pos = cur.filter(f => f > 0); const mx = pos.length ? Math.max(...pos) : 0; const mn = pos.length ? Math.min(...pos) : 0;
+        const score = mx + (mx - mn) * 0.6 + pos.length * 0.15;
+        if (!best || score < best.score) best = {frets: cur.slice(), score, mx};
+        return;
+      }
+      for (const f of opts) { if (set.has((U_PC[s] + f) % 12)) { cur[s] = f; rec(s + 1); } }
+    })(0);
+  }
+  const res = best ? {frets: best.frets, barre: null, cost: 1 + Math.max(0, best.mx - 3) * 0.6} : {frets: [-1,-1,-1,-1], barre: null, cost: 5};
+  vcache.set(ck, res); return res;
+}
+function voicing(inst, root, q, bass) { return inst === 'uke' ? ukeVoicing(root, q) : guitarVoicing(root, q, bass); }
+
+function fretSVG(v, nStr, w) {
+  const sp = nStr === 6 ? 11 : 14, x0 = 18, y0 = 16, fh = 14, nF = 5;
+  const W = x0 + sp * (nStr - 1) + 12, H = y0 + fh * nF + 6;
+  const pos = v.frets.filter(f => f > 0); const mx = pos.length ? Math.max(...pos) : 0;
+  const base = mx <= 4 ? 1 : Math.min(...pos);
+  let s = `<svg viewBox="0 0 ${W} ${H}" width="${w}" height="${Math.round(w * H / W)}" aria-hidden="true">`;
+  for (let i = 0; i < nStr; i++) s += `<line class="fb-line" x1="${x0 + i*sp}" y1="${y0}" x2="${x0 + i*sp}" y2="${y0 + fh*nF}"/>`;
+  for (let j = 0; j <= nF; j++) s += `<line class="${j === 0 && base === 1 ? 'fb-nut' : 'fb-line'}" x1="${x0}" y1="${y0 + j*fh}" x2="${x0 + sp*(nStr-1)}" y2="${y0 + j*fh}"/>`;
+  if (base > 1) s += `<text class="fb-txt" x="2" y="${y0 + fh*0.7}">${base}</text>`;
+  if (v.barre) {
+    const y = y0 + (v.barre.fret - base + 0.5) * fh;
+    s += `<rect class="fb-dot" x="${x0 + v.barre.from*sp - 4.5}" y="${y - 4.5}" width="${(v.barre.to - v.barre.from)*sp + 9}" height="9" rx="4.5"/>`;
+  }
+  v.frets.forEach((f, i) => {
+    const x = x0 + i * sp;
+    if (f < 0) s += `<text class="fb-txt" x="${x}" y="${y0 - 5}" text-anchor="middle">×</text>`;
+    else if (f === 0) s += `<circle class="fb-open" cx="${x}" cy="${y0 - 7}" r="3"/>`;
+    else if (!(v.barre && f === v.barre.fret && i >= v.barre.from && i <= v.barre.to)) s += `<circle class="fb-dot" cx="${x}" cy="${y0 + (f - base + 0.5)*fh}" r="4.5"/>`;
+  });
+  return s + '</svg>';
+}
+function pianoSVG(root, q, w) {
+  const iv = QUAL[q].iv; const notes = new Set();
+  iv.forEach((x, i) => { let n = root + (i > 0 && x < iv[i-1] ? x + 12 : x); if (n >= 24) n -= 12; notes.add(n); });
+  const WP = [0,2,4,5,7,9,11], BP = [[1,1],[3,2],[6,4],[8,5],[10,6]];
+  const kw = 10, H = 46; let s = `<svg viewBox="0 0 ${kw*14+2} ${H+2}" width="${w}" height="${Math.round(w*(H+2)/(kw*14+2))}" aria-hidden="true">`;
+  for (let o = 0; o < 2; o++) WP.forEach((pc, i) => { const n = o*12 + pc; s += `<rect class="${notes.has(n) ? (n % 12 === root ? 'pk-root' : 'pk-on') : 'pk-w'}" x="${1 + (o*7 + i)*kw}" y="1" width="${kw}" height="${H}" rx="1.5" ${notes.has(n) ? 'stroke="var(--muted)" stroke-width=".8"' : ''}/>`; });
+  for (let o = 0; o < 2; o++) BP.forEach(([pc, after]) => { const n = o*12 + pc; s += `<rect class="${notes.has(n) ? (n % 12 === root ? 'pk-root' : 'pk-on') : 'pk-b'}" x="${1 + (o*7 + after)*kw - 3.2}" y="1" width="6.4" height="28" rx="1"/>`; });
+  return s + '</svg>';
+}
+function diagram(shapeStr, w) {
+  const p = parseChord(shapeStr); if (!p) return '';
+  if (state.inst === 'piano') return pianoSVG(p.root, p.q, w * 1.35);
+  return fretSVG(voicing(state.inst, p.root, p.q, p.bass), state.inst === 'uke' ? 4 : 6, w);
+}
+
+/* ================= sound ================= */
+let AC = null, master = null;
+function audio() {
+  if (!AC) { const C = window.AudioContext || window.webkitAudioContext; if (!C) return null; AC = new C(); master = AC.createGain(); master.gain.value = 0.8; master.connect(AC.destination); }
+  if (AC.state === 'suspended') AC.resume();
+  return AC;
+}
+function pluck(midi, t, vol) {
+  const f = 440 * Math.pow(2, (midi - 69) / 12);
+  const o1 = AC.createOscillator(), o2 = AC.createOscillator(), g2 = AC.createGain(), lp = AC.createBiquadFilter(), g = AC.createGain();
+  o1.type = 'triangle'; o1.frequency.value = f; o2.type = 'sawtooth'; o2.frequency.value = f * 1.003; g2.gain.value = 0.22;
+  lp.type = 'lowpass'; lp.frequency.setValueAtTime(Math.min(f * 9, 12000), t); lp.frequency.exponentialRampToValueAtTime(f * 1.6, t + 0.9);
+  g.gain.setValueAtTime(0.0001, t); g.gain.exponentialRampToValueAtTime(vol, t + 0.008); g.gain.exponentialRampToValueAtTime(0.0001, t + 2.4);
+  o1.connect(lp); o2.connect(g2); g2.connect(lp); lp.connect(g); g.connect(master);
+  o1.start(t); o2.start(t); o1.stop(t + 2.5); o2.stop(t + 2.5);
+}
+function playChord(shapeStr) {
+  const p = parseChord(shapeStr); if (!p || !audio()) return;
+  let midi = [], gap = 0.032;
+  if (state.inst === 'piano') {
+    const iv = QUAL[p.q].iv; midi = iv.map((x, i) => 60 + p.root + (i > 0 && x < iv[i-1] ? x + 12 : x));
+    midi.unshift(48 + (p.bass != null ? p.bass : p.root)); gap = 0.004;
+  } else if (state.inst === 'uke') { midi = ukeVoicing(p.root, p.q).frets.map((f, i) => f < 0 ? null : U_MIDI[i] + f).filter(x => x != null); gap = 0.04; }
+  else { midi = guitarVoicing(p.root, p.q, p.bass).frets.map((f, i) => f < 0 ? null : G_OPEN[i] + f + (state.capo || 0)).filter(x => x != null);
+         if (state.inst === 'guitar') midi = midi; }
+  const t = AC.currentTime + 0.02, vol = 0.32 / Math.sqrt(midi.length);
+  midi.forEach((m, i) => pluck(m, t + i * gap, vol));
+}
+
+/* metronome */
+const metro = {on: false, next: 0, beat: 0, timer: null};
+function clickAt(t, acc) {
+  const o = AC.createOscillator(), g = AC.createGain();
+  o.type = 'square'; o.frequency.value = acc ? 1650 : 1050;
+  g.gain.setValueAtTime(0.0001, t); g.gain.exponentialRampToValueAtTime(acc ? 0.35 : 0.22, t + 0.002); g.gain.exponentialRampToValueAtTime(0.0001, t + 0.045);
+  o.connect(g); g.connect(master); o.start(t); o.stop(t + 0.06);
+}
+function metroTick() {
+  const bpm = cur.bpm || 100, spb = 60 / bpm, bar = cur.beats;
+  while (metro.next < AC.currentTime + 0.12) {
+    const acc = metro.beat % bar === 0; clickAt(metro.next, acc);
+    const d = Math.max(0, (metro.next - AC.currentTime) * 1000);
+    setTimeout(() => { const l = $('#led'); l.classList.toggle('acc', acc); l.classList.add('hit'); setTimeout(() => l.classList.remove('hit'), 90); }, d);
+    metro.next += spb; metro.beat++;
+  }
+}
+function setMetro(on) {
+  if (on && !audio()) { toast('เบราว์เซอร์นี้เล่นเสียงไม่ได้'); return; }
+  metro.on = on; clearInterval(metro.timer);
+  if (on) { metro.next = AC.currentTime + 0.08; metro.beat = 0; metro.timer = setInterval(metroTick, 25); metroTick(); }
+  $('#metro').setAttribute('aria-pressed', on);
+}
+
+/* ================= parsing ================= */
+function parseDur(v) { const m = /^(\d+):(\d{1,2})$/.exec(v.trim()); return m ? +m[1] * 60 + +m[2] : (parseFloat(v) || null); }
+function parseSong(text) {
+  const meta = {}, items = [];
+  for (const raw of String(text || '').replace(/\r/g, '').split('\n')) {
+    const line = raw.replace(/\s+$/, '');
+    const d = /^\s*\{\s*([a-zA-Z_]+)\s*(?::\s*(.*?))?\s*\}\s*$/.exec(line);
+    if (d) {
+      const k = d[1].toLowerCase(), v = (d[2] || '').trim();
+      if (k === 'title' || k === 't') meta.title = v;
+      else if (k === 'artist' || k === 'subtitle' || k === 'st') meta.artist = v;
+      else if (k === 'key') meta.key = v;
+      else if (k === 'tempo' || k === 'bpm') meta.tempo = parseFloat(v) || null;
+      else if (k === 'duration') meta.duration = parseDur(v);
+      else if (k === 'time') meta.time = v;
+      else if (['c','comment','ci','section'].includes(k)) items.push({type:'section', label:v});
+      else if (k === 'soc' || k === 'start_of_chorus') items.push({type:'section', label:v || 'Chorus'});
+      else if (k === 'sov' || k === 'start_of_verse') items.push({type:'section', label:v || 'Verse'});
+      else if (k === 'sob' || k === 'start_of_bridge') items.push({type:'section', label:v || 'Bridge'});
+      continue;
+    }
+    if (/^\s*#/.test(line)) { items.push({type:'section', label: line.replace(/^\s*#+\s*/, '')}); continue; }
+    if (!line.trim()) { items.push({type:'blank'}); continue; }
+    const segs = [], re = /\[([^\]]+)\]/g; let m, last = 0, pending = null;
+    while ((m = re.exec(line))) { const txt = line.slice(last, m.index); if (pending !== null || txt) segs.push({c: pending, t: txt}); pending = m[1]; last = re.lastIndex; }
+    const tail = line.slice(last); if (pending !== null || tail) segs.push({c: pending, t: tail});
+    items.push({type:'line', segs, hasChord: segs.some(s => s.c)});
+  }
+  const chords = []; items.forEach(it => it.type === 'line' && it.segs.forEach(s => s.c && parseChord(s.c) && chords.push(s.c)));
+  return {meta, items, chords};
+}
+
+/* chords-over-lyrics → inline */
+const THAI_COMB = /[ัิ-ฺ็-๎]/;
+const FILLER = /^(\||\|\||-+|\/+|%|x\d+|\(x\d+\)|\.+|\*|:|\(|\)|→|>)$/i;
+const cleanTok = t => t.replace(/^[(\[]+|[)\],]+$/g, '');
+function isChordLine(line) {
+  const toks = line.trim().split(/\s+/).filter(Boolean); if (!toks.length) return false;
+  let n = 0; for (const t of toks) { if (FILLER.test(t)) continue; if (!parseChord(cleanTok(t))) return false; n++; }
+  return n > 0;
+}
+const SEC_WORDS = '(intro|verse|chorus|pre[- ]?chorus|pre[- ]?hook|hook|bridge|solo|outro|instru\\w*|interlude|ending|refrain|ท่อน\\s*\\S*|ฮุก|ฮุค|เกริ่น|ดนตรี|โซโล่?|จบ|ซ้ำ\\S*|เข้าเพลง)';
+const SEC_RE = new RegExp('^\\s*[\\[(*]?\\s*' + SEC_WORDS + '\\s*\\d*\\s*[\\])*]?\\s*:?\\s*$', 'i');
+const SEC_INLINE = new RegExp('^\\s*[\\[(*]?\\s*' + SEC_WORDS + '\\s*\\d*\\s*[\\])*]?\\s*[:：]?\\s*(.+)$', 'i');
+function chordOnlyLine(line) { return line.trim().split(/\s+/).filter(t => !FILLER.test(t)).map(t => `[${cleanTok(t)}]`).join(' '); }
+function mergeLine(chordLine, lyric) {
+  const chords = []; const re = /\S+/g; let m;
+  while ((m = re.exec(chordLine))) { const tok = cleanTok(m[0]); if (parseChord(tok)) chords.push({col: m.index, c: tok}); }
+  const chars = [...lyric]; let out = '', i = 0, w = 0;
+  for (const ch of chords) {
+    while (i < chars.length && (w < ch.col || THAI_COMB.test(chars[i]))) { if (!THAI_COMB.test(chars[i])) w++; out += chars[i]; i++; }
+    if (w < ch.col) { out += ' '.repeat(ch.col - w); w = ch.col; }
+    out += `[${ch.c}]`;
+  }
+  return out + chars.slice(i).join('');
+}
+// dochord-style copy: chord names sit inline in the Thai lyric ("•••C#m•••E•••")
+const INLINE_RE = /([A-G][#b♯♭]?[A-Za-z0-9+°ø#\-]*(?:\/[A-G][#b♯♭]?)?)/g;
+const HAS_THAI = /[฀-๿]/;
+function inlineChords(line) {
+  let n = 0;
+  const out = line.replace(INLINE_RE, (m, tok, off, str) => {
+    const prev = str[off - 1], next = str[off + m.length];
+    if (prev && /[A-Za-z0-9#\/\[]/.test(prev)) return m;
+    if (next && /[A-Za-z0-9\]]/.test(next)) return m;
+    if (!parseChord(tok)) return m;
+    n++; return `[${tok}]`;
+  });
+  return {out, n};
+}
+const looksInline = text => text.split('\n').filter(l => HAS_THAI.test(l) && inlineChords(l).n > 0).length >= 2;
+function looksChordsOver(text) { return !/\[[A-G][^\]\n]{0,8}\]/.test(text) && (text.split('\n').some(isChordLine) || looksInline(text)); }
+function convertText(text) {
+  const lines = String(text).replace(/\r/g, '').replace(/ /g, ' ').replace(/\t/g, '    ').split('\n'); const out = []; let n = 0;
+  for (let i = 0; i < lines.length; i++) {
+    let line = lines[i]; const next = lines[i + 1];
+    const star = /^\s*(\*{1,3})\s*(?=\S)/.exec(line);
+    if (star && HAS_THAI.test(line)) { out.push('', '# ' + (star[1].length === 1 ? 'ท่อนฮุก' : 'ท่อนฮุก ' + star[1].length)); line = line.slice(star[0].length); }
+    const si = SEC_INLINE.exec(line);
+    if (SEC_RE.test(line) && !isChordLine(line)) { out.push('# ' + line.trim().replace(/^[\[(*]+|[\])*:]+$/g, '').trim()); continue; }
+    if (si && isChordLine(si[2])) { out.push('', '# ' + si[1].trim()); out.push(chordOnlyLine(si[2])); n++; continue; }
+    if (isChordLine(line)) {
+      if (next != null && next.trim() && !isChordLine(next) && !SEC_RE.test(next) && !SEC_INLINE.test(next)) { out.push(mergeLine(line, next)); i++; }
+      else out.push(chordOnlyLine(line));
+      n++; continue;
+    }
+    if (HAS_THAI.test(line)) { const r = inlineChords(line); if (r.n) { out.push(r.out); n++; continue; } }
+    out.push(line);
+  }
+  return {text: out.join('\n').replace(/\n{3,}/g, '\n\n'), n};
+}
+
+/* ================= data ================= */
+const SAMPLES = [
+{id:'x-home', text:`{title: ทางกลับบ้าน}
+{artist: เพลงตัวอย่าง}
+{key: G}
+{tempo: 78}
+{duration: 3:40}
+
+# Intro
+[G] [D/F#] [Em] [Cadd9]
+
+# Verse
+[G]ถนนเส้นเดิมที่เคย[D/F#]เดินผ่าน
+[Em]ไฟข้างทางยังส่อง[Cadd9]สว่างเหมือนวันวาน
+[G]กระเป๋าใบเก่ากับ[D/F#]ใจที่เหนื่อยล้า
+[Am7]วันนี้ฉันขอ[Dsus4]กลับ[D]มา
+
+# Chorus
+[C]กลับบ้าน... กลับไป[D]หาคนที่รอ
+[Bm]ไม่ต้องมีอะไรมาก[Em]พอ แค่เพียงได้เจอ
+[C]กลับบ้าน... ที่ที่[D]หัวใจได้พัก
+[Am7]อ้อมกอดที่แสน[D]รัก ยังรอฉันอยู่ [G]`},
+{id:'x-rain', text:`{title: ฝนแรกของปี}
+{artist: เพลงตัวอย่าง (ไม่ใส่คีย์ ให้ระบบตรวจเอง)}
+{tempo: 92}
+{duration: 3:20}
+
+# Intro
+[C] [Fmaj7] [C] [Fmaj7]
+
+# Verse
+[C]กลิ่นดินหลังฝน[G/B]ลอยมาตามลม
+[Am]ฟ้าที่เคยหม่น[Em]กลับดูสดใส
+[F]เธอยืนตรงนั้น [C/E]ใต้ชายคาเดิม
+[Dm7]ยิ้มให้ฉันเหมือนครั้ง[G]แรกที่เจอ
+
+# Pre-Chorus
+[Am]อยากจะบอก[E7]เธอ...
+[F]ว่าหัวใจไม่เคย[Gsus4]เปลี่ยน[G]ไป
+
+# Chorus
+[C]ฝนแรกของ[G]ปี พาเธอกลับ[Am]มา
+[F]เติมฟ้าที่ว่าง[C]เปล่าให้เต็มดวง[G]ใจ
+[C]ฝนแรกของ[G]ปี ไม่ว่านาน[Am]เท่าไร
+[F]ฉันยังรอ[G]เธอ...อยู่ตรง[C]นี้`},
+{id:'x-lights', text:`{title: ไฟริมทาง}
+{artist: เพลงตัวอย่าง (คีย์ Eb ลองกดคาโป้ที่แนะนำ)}
+{key: Eb}
+{tempo: 120}
+{duration: 3:05}
+
+# Intro
+[Eb] [Bb] [Cm] [Ab]
+
+# Verse
+[Eb]คืนนี้เมือง[Bb]ใหญ่ ยังไม่[Cm]หลับใหล
+[Ab]ไฟริมทางเรียงรายเหมือน[Bb]ดาว
+[Eb]เราสองคน[Bb]เดิน ไม่มี[Cm]จุดหมาย
+[Ab]ขอแค่มีเธอข้างกาย[Bbsus4]ก็[Bb]พอ
+
+# Chorus
+[Ab]เปิดเพลงให้[Bb]ดัง ร้องตามให้[Gm7]ลั่น[Cm]
+[Ab]ลืมเรื่องวัน[Bb]พรุ่ง ไว้ก่อน[Eb]ได้ไหม
+[Ab]คืนนี้ของ[Bb]เรา ไม่ยาว[Gm7]นานเท่า[Cm]ไร
+[Fm7]จับมือฉันไว้ แล้ว[Bb]วิ่งไปกับ[Eb]ฉัน`},
+{id:'x-grace', text:`{title: Amazing Grace}
+{artist: John Newton, 1779 · Public domain}
+{key: G}
+{tempo: 72}
+{time: 3/4}
+{duration: 2:50}
+
+# Verse 1
+A[G]mazing [G7]grace, how [C]sweet the [G]sound
+That saved a wretch like [D]me
+I [G]once was [G7]lost, but [C]now am [G]found
+Was [Em]blind, but [D7]now I [G]see
+
+# Verse 2
+'Twas [G]grace that [G7]taught my [C]heart to [G]fear
+And grace my fears re[D]lieved
+How [G]precious [G7]did that [C]grace ap[G]pear
+The [Em]hour I [D7]first be[G]lieved`}
+];
+const GIGS = [
+  {id:'g0411', date:'4/11', title:'Krungsri Tech Day', place:'สามย่านมิตรทาวน์', mins:35, songs:[
+    {n:'คุกเข่า', a:'Cocktail', bpm:128, sing:['มอส']},
+    {n:'ขี้หึง', a:'Silly Fools', bpm:116, sing:['คิง']},
+    {n:'ฝากที', a:'Tattoo Colour', bpm:118, sing:['คิง']},
+    {n:'รักเธอหัวทิ่มบ่อ', a:'Hangman', bpm:100, sing:['คิง']},
+    {n:'เธอยัง', a:'Potato', bpm:84, sing:['คิง']},
+    {n:'เล่นของสูง', a:'Big Ass', bpm:96, sing:['คิง']},
+    {n:'สักวันฉันจะดีพอ', a:'Bodyslam', bpm:126, sing:['มอส']},
+    {n:'วัดใจ', a:'Silly Fools', bpm:160, sing:['คิง','มอส'], note:'คิงหลัก · มอสเสริม'}
+  ]},
+  {id:'g0611', date:'6/11', title:'ITD Outing', place:'ชะอำ', mins:null, songs:[]}
+];
+// Chord-only charts (no lyrics) taken from dochord.com: one row = one sung line. Open src for lyrics.
+const CHARTS = {
+'g0411-1': {src:'https://www.dochord.com/39434/', text:`{key: D}
+
+# ท่อนร้อง
+[D] [G] [D/F#] [G]
+[Bm7]
+[A] [G]
+[D] [G] [D/F#] [G]
+[Bm7]
+[A]
+[G] [A]
+
+# ท่อนฮุก
+[G] [A]
+[F#m] [Bm]
+[G] [A]
+[F#m] [Bm]
+[G] [A]
+[F#m] [Bm]
+[G]
+[A]
+
+# Instru
+[G] [A] [F#m] [Bm]
+[G] [A] [F#m] [F#]
+
+# ท่อนร้อง
+[D] [G] [D/F#] [G]
+[Bm7] [A]
+[G] [A]
+[G] [A]
+
+# ท่อนฮุก
+[G] [A]
+[F#m] [Bm]
+[G] [A]
+[F#m] [Bm]
+[G] [A]
+[F#m]
+[Bm]
+[G]
+[A] [G] [A]
+[G] [A]
+[F#m] [Bm]
+[A] [G] [A]
+[F#m]
+[Bm] [A] [G]
+[A]
+
+# Solo
+[G] [A] [F#m] [Bm] [A]
+[G] [A] [F#m] [Bm]
+[G] [A] [F#] [Bm] [A]
+[G] [G] [A] [A]
+
+# ท่อนฮุก
+[G] [A]
+[Bm]
+[G] [A]
+[Bm]
+[G] [A]
+[F#m]
+[Bm]
+[G]
+[A] [G] [A]
+
+# ท่อนฮุก
+[G] [A]
+[F#m] [Bm]
+[G] [A]
+[F#m] [Bm]
+[G] [A]
+[F#m]
+[Bm]
+[G]
+[A] [G/B] [A/C#]
+
+# จบ
+[G]`},
+'g0411-2': {src:'https://www.dochord.com/31718/', text:`{key: E}
+
+# Intro
+[E] [E] [A] [B]
+[C#m] [A] [B] [B]
+
+# ท่อนร้อง
+[E]
+[G#m] [A]
+[E]
+[C#m] [B]
+[E]
+[G#m] [A]
+[E]
+[C#m] [B]
+
+# Instru
+[E] [E] [A] [B]
+
+# ท่อนร้อง
+[E]
+[G#m] [A]
+[E]
+[C#m] [B]
+[C#m] [B]
+[C#m] [B] [C#m]
+[B]
+[A] [B]
+
+# ท่อนฮุก
+[E]
+[A]
+[B] [C#m]
+[A]
+[B]
+[E]
+[A]
+[B] [C#m]
+[A]
+[B]
+[C#m] [A]
+[C#m] [A]
+[C#m] [A]
+[C#m] [B]
+
+# Instru
+[E] [E] [A] [B]
+[C#m] [A] [B] [B]
+
+# ท่อนฮุก
+[E]
+[A]
+[B] [C#m]
+[A]
+[B]
+[E]
+[A]
+[B] [C#m]
+[A]
+[B]
+
+# ท่อนฮุก
+[E]
+[A]
+[B] [C#m]
+[A]
+[B]
+[E]
+[A]
+[B] [C#m]
+[A]
+[B]
+
+# จบ
+[E]`},
+'g0411-3': {src:'https://www.dochord.com/366409/', text:`{key: G}
+
+# Intro
+[Gmaj7]
+
+# ท่อนร้อง
+[Am7]
+[Gmaj7]
+[Am7]
+[Gmaj7] [E7]
+[Am7]
+[Gmaj7]
+[Am7]
+[Gmaj7] [E7]
+
+# ท่อนก่อนฮุก
+[Bm] [Em]
+[Am7] [Gmaj7]
+[Bm] [Em]
+[Am7] [D7]
+
+# ท่อนฮุก
+[Gmaj7] [Em]
+[Am7] [Cm]
+[Bm] [Em]
+[Am7] [D7]
+[Gmaj7] [Em]
+[Am7] [Cm]
+[Bm] [Em] [Am7]
+[D7] [Gmaj7] [E7]
+[Am7] [Gmaj7]
+
+# ท่อนร้อง
+[Am7]
+[Gmaj7] [E7]
+
+# ท่อนก่อนฮุก
+[Bm] [Em]
+[Am7] [Gmaj7]
+[Bm] [Em]
+[Am7] [D7]
+
+# ท่อนฮุก
+[Gmaj7] [Em]
+[Am7] [Cm]
+[Bm] [Em]
+[Am7] [D7]
+[Gmaj7] [Em]
+[Am7] [Cm]
+[Bm] [Em] [Am7]
+[D7]
+
+# Instru
+[Cmaj7] [Cmaj7] [Gmaj7] [E7]
+[Cmaj7] [Cmaj7] [Am7] [D7]
+
+# ท่อนฮุก
+[Gmaj7] [Em]
+[Am7] [Cm]
+[Bm] [Em]
+[Am7] [D7]
+[Gmaj7] [Em]
+[Am7] [Cm]
+[Bm] [Em] [Am7]
+[D7]
+[Gmaj7] [E7]
+
+# ท่อนจบ
+[Am7]
+[Cm] [Bm]
+[Em]
+[Am7]
+[D7]
+[Gmaj7] [Em]
+[Am7]
+[Cm] [Bm]
+[Em7] [Am7]
+[D7]
+[Gmaj7]`},
+'g0411-4': {src:'https://www.dochord.com/376479/', text:`{key: G}
+
+# Intro
+[G] [G] [C] [D]
+
+# ท่อนร้อง
+[G]
+[C]
+[G]
+[G]
+[C]
+[G]
+
+# ท่อนฮุก
+[G]
+[C]
+[D]
+
+# ท่อนร้อง
+[G]
+[C]
+[D]
+[G]
+[C]
+[G]
+[G]
+[C]
+[G]
+
+# ท่อนฮุก
+[G]
+[C]
+[D]
+[G]
+[C]
+[D]
+[G]
+[C]
+[D]
+[G]
+[C]
+[D]
+
+# Instru
+[G] [G] [C] [C]
+
+# ท่อนฮุก
+[G]
+[C]
+[D]
+[G]
+[C]
+[D]
+[G]
+[C]
+[D]
+[G]
+[C]
+[D] [G]`},
+'g0411-5': {src:'https://www.dochord.com/46354/', text:`{key: C}
+
+# ท่อนร้อง
+[Cmaj7]
+[Am7]
+[F] [Em7]
+[Dm7] [G]
+[Cmaj7]
+[Am7]
+[F] [Em7]
+[Dm7] [G]
+
+# ท่อนก่อนฮุก
+[Em7]
+[Am7] [A7]
+[Dm7] [Em7]
+[Dm7] [G]
+
+# ท่อนฮุก
+[C]
+[Am]
+[F]
+[Em]
+[Dm] [G]
+[C]
+[C]
+[Am]
+[F] [Em]
+[Dm] [G]
+
+# ท่อนก่อนฮุก
+[Em]
+[Am] [A7]
+[Dm] [Em]
+[Dm] [G]
+
+# ท่อนฮุก
+[C]
+[Am]
+[F]
+[Em]
+[Dm] [G]
+[C]
+[Am]
+[F]
+[Em]
+[Dm] [G]
+
+# Instru
+[C] [C] [Am] [Am]
+[F] [Em] [Dm] [G]
+
+# ท่อนก่อนฮุก
+[Em]
+[Am] [A7]
+[Dm] [Em]
+[Dm] [G]
+
+# ท่อนฮุก
+[C]
+[Am]
+[F]
+[Em]
+[Dm] [G]
+[C]
+[Am]
+[F]
+[Em]
+[Dm] [G]
+[C]`},
+'g0411-6': {src:'https://www.dochord.com/39782/', text:`{key: C}
+
+# ท่อนร้อง
+[C]
+[F] [Am]
+[G] [F]
+
+# Instru
+[C] [C]
+
+# ท่อนร้อง
+[C]
+[F] [Am]
+[G] [F]
+[Am] [G] [F]
+
+# ท่อนฮุก
+[C]
+[Am]
+[F]
+[Dm] [G]
+[C]
+[Am]
+[Gm] [C] [F] [Fm]
+[Dm] [G]
+
+# Instru
+[C] [C]
+
+# ท่อนร้อง
+[C]
+[F] [Am]
+[G] [F]
+[Am] [G] [F]
+
+# ท่อนฮุก
+[C]
+[Am]
+[F]
+[Dm] [G]
+[C]
+[Am]
+[Gm] [C] [F] [Fm]
+[Dm] [G]
+
+# Instru
+[C] [C] [F] [F]
+
+# ท่อนฮุก
+[C]
+[Am]
+[F]
+[Dm] [G]
+[C]
+[Am]
+[Gm] [C] [F] [Fm]
+[Dm] [G] [C]
+
+# จบ
+[Dm] [F] [G] [C]`},
+'g0411-7': {src:'https://www.dochord.com/7302/', text:`{key: G}
+
+# Intro
+[G]
+
+# ท่อนร้อง
+[C]
+[G]
+[C]
+[G]
+[Am] [Bm]
+[C] [D]
+[Am] [Bm]
+[C] [D]
+
+# ท่อนฮุก
+[G] [Em] [C]
+[D] [Bm] [Em]
+[C] [D] [G]
+
+# ท่อนร้อง
+[C]
+[G]
+[C]
+[G]
+[Am] [Bm]
+[C] [D]
+[Am] [Bm]
+[C] [D]
+
+# ท่อนฮุก
+[G] [Em] [C]
+[D] [Bm] [Em]
+[C] [D]
+[G] [Em] [C]
+[D] [Bm] [Em]
+[C] [D]
+
+# Instru
+[G] [G] [Em] [Em]
+[C] [D] [G] [G]
+
+# ท่อนก่อนฮุก
+[Am] [Bm]
+[C] [D]
+
+# ท่อนฮุก
+[G] [Em] [C]
+[D] [Bm] [Em]
+[C] [D]
+[G] [Em] [C]
+[D] [Bm] [Em]
+[C] [D]
+
+# ท่อนจบ
+[G] [Em] [C]
+[D] [Bm] [Em]
+[C] [D]
+[G] [Em] [C]
+[D]
+[G] [Em] [C]
+[D]
+[C] [Bm] [G]`},
+'g0411-8': {src:'https://www.dochord.com/31729/', text:`{key: E}
+
+# Intro
+[E] [B/D#] [C#m] [A] [B]
+[E] [B/D#] [A] [B]
+
+# ท่อนร้อง
+[C#m] [E] [A]
+[C#m] [E] [A]
+[C#m] [E] [A]
+[C#m] [E]
+[A]
+[E] [B/D#] [C#m] [A] [B]
+[E] [B/D#] [C#m] [A] [B]
+
+# ท่อนฮุก
+[E] [B/D#] [C#m] [A] [B]
+[E] [B/D#] [A] [B]
+[E] [B/D#] [C#m] [A] [B]
+[E] [B/D#] [A] [B]
+
+# Instru
+[C#m]
+
+# ท่อนร้อง
+[C#m] [E] [A]
+[C#m] [E] [A]
+[C#m] [E] [A]
+[C#m] [E]
+[A]
+[E] [B/D#] [C#m] [A] [B]
+[E] [B/D#] [C#m] [A] [B]
+
+# ท่อนฮุก
+[E] [B/D#] [C#m] [A] [B]
+[E] [B/D#] [A] [B]
+[E] [B/D#] [C#m] [A] [B]
+[E] [B/D#] [A] [B]
+
+# ท่อนแยก
+[A] [G#m]
+[F#m] [E]
+[A] [G#m] [F#m] [B]
+
+# Instru
+[E] [B/D#] [C#m] [A] [B]
+[E] [B/D#] [A] [B]
+
+# ท่อนฮุก
+[E] [B/D#] [C#m] [A] [B]
+[E] [B/D#] [C#m] [A] [B]
+[E] [B/D#] [C#m] [A] [B]
+[E] [B/D#] [C#m] [A] [B]
+
+# ท่อนฮุก
+[E] [B/D#] [C#m] [A] [B]
+[E] [B/D#] [A] [B]
+[E] [B/D#] [C#m] [A] [B]
+[E] [B/D#] [A] [B]
+
+# ท่อนฮุก
+[E] [B/D#] [C#m] [A] [B]
+[E] [B/D#] [A] [B]
+[E] [B/D#] [C#m] [A] [B]
+[E] [B/D#] [A] [B]
+
+# จบ
+[E]`}
+};
+GIGS.forEach(g => g.songs.forEach((s, i) => { s.id = `${g.id}-${i + 1}`; if (CHARTS[s.id]) { s.chart = CHARTS[s.id].text; s.src = CHARTS[s.id].src; } }));
+const SING = {'คิง':'var(--sing-a)', 'มอส':'var(--sing-b)'};
+const singChip = n => `<span class="sing" style="--s:${SING[n] || 'var(--muted)'}">${esc(n)}</span>`;
+const tempoVar = b => !b ? 'var(--line)' : b <= 100 ? 'var(--slow)' : b < 140 ? 'var(--mid)' : 'var(--fast)';
+
+let userSongs = store.get('cp.user', []);
+function findSong(id) {
+  for (const g of GIGS) { const i = g.songs.findIndex(s => s.id === id); if (i >= 0) return {id, kind:'set', entry:g.songs[i], gig:g, idx:i, text: store.get('cp.text.' + id, g.songs[i].chart || '')}; }
+  const x = SAMPLES.find(s => s.id === id); if (x) return {id, kind:'sample', text: store.get('cp.text.' + id, x.text)};
+  const u = userSongs.find(s => s.id === id); if (u) return {id, kind:'user', text: u.text};
+  return null;
+}
+
+function hasLyrics(id) {
+  const t = store.get('cp.text.' + id, null);
+  return !!t && t.split('\n').some(l => !/^\s*[#{]/.test(l) && HAS_THAI.test(l.replace(/\[[^\]]*\]/g, '')));
+}
+// pasted page text → stored chart; keeps the bundled chart's key when the paste has none
+function preparePaste(id, raw, keyOverride) {
+  let t = String(raw).trim(); if (!t) return '';
+  if (looksChordsOver(t)) t = convertText(t).text;
+  const s = findSong(id), chartKey = s && s.entry && s.entry.chart ? (/\{key:\s*([^}]+)\}/.exec(s.entry.chart) || [])[1] : null;
+  const k = keyOverride || (!/\{key:/.test(t) ? chartKey : null);
+  return (k ? `{key: ${k.trim()}}\n` : '') + t;
+}
+
+/* ================= state ================= */
+const G = store.get('cp.prefs', {});
+const state = {inst: G.inst || 'guitar', nash: !!G.nash, simp: !!G.simp, size: G.size || 1, cols: !!G.cols, speed: G.speed || 1, tab: G.tab || 'set', gig: G.gig || GIGS[0].id, t: 0, capo: 0};
+let songId = G.last && findSong(G.last) ? G.last : GIGS[0].songs[0].id;
+let cur = null;
+const savePrefs = () => store.set('cp.prefs', {inst: state.inst, nash: state.nash, simp: state.simp, size: state.size, cols: state.cols, speed: state.speed, tab: state.tab, gig: state.gig, last: songId});
+const saveSongPrefs = () => store.set('cp.sp.' + songId, {t: state.t, capo: state.capo});
+const norm = t => ((t + 6) % 12 + 12) % 12 - 6;
+
+function loadSong(id, keepScroll) {
+  stopScroll();
+  const s = findSong(id) || findSong(GIGS[0].songs[0].id); songId = s.id;
+  const p = parseSong(s.text);
+  const e = s.entry || {};
+  let key = p.meta.key ? parseKey(p.meta.key) : null, auto = false;
+  if (!key && p.chords.length) { key = detectKey(p.chords); auto = true; }
+  cur = {song: s, parsed: p, title: p.meta.title || e.n || 'ไม่มีชื่อเพลง', artist: p.meta.artist || e.a || '',
+         bpm: p.meta.tempo || e.bpm || null, dur: p.meta.duration || 240, key, autoKey: auto,
+         beats: p.meta.time && /^3\//.test(p.meta.time) ? 3 : p.meta.time && /^6\//.test(p.meta.time) ? 6 : 4};
+  const sp = store.get('cp.sp.' + songId, {t: 0, capo: 0}); state.t = sp.t || 0; state.capo = sp.capo || 0;
+  if (s.gig) state.gig = s.gig.id;
+  savePrefs(); renderAll();
+  if (!keepScroll) window.scrollTo(0, 0);
+}
+
+/* ================= chord transform ================= */
+const shift = () => state.t - (state.inst === 'piano' ? 0 : state.capo);
+function shapeFlat() { if (!cur.key) return false; return useFlat((cur.key.pc + shift() + 12) % 12, cur.key.minor); }
+function xform(raw) {
+  const p = parseChord(raw); if (!p) return null;
+  let q = p.q, bass = p.bass; if (state.simp) { q = QUAL[q].simp; bass = null; }
+  const sh = shift(), root = (p.root + sh + 12) % 12, b = bass == null ? null : (bass + sh + 12) % 12;
+  const shape = chordName(root, q, b, shapeFlat());
+  let disp = shape;
+  if (state.nash && cur.key) { const k = cur.key.pc; disp = DEG[(p.root - k + 12) % 12] + q + (bass != null ? '/' + DEG[(bass - k + 12) % 12] : ''); }
+  return {shape, disp};
+}
+function soundingKeyName(extra) { return cur.key ? keyName((cur.key.pc + state.t + (extra || 0) + 120) % 12, cur.key.minor) : '—'; }
+
+/* ================= render ================= */
+function renderAll() { renderRail(); renderHead(); renderToolbar(); renderSheet(); renderNext(); }
+
+function renderRail() {
+  $('#tab-set').setAttribute('aria-selected', state.tab === 'set'); $('#tab-lib').setAttribute('aria-selected', state.tab === 'lib');
+  $('#pane-set').hidden = state.tab !== 'set'; $('#pane-lib').hidden = state.tab !== 'lib';
+  const g = GIGS.find(x => x.id === state.gig) || GIGS[0];
+  const mx = Math.max(160, ...g.songs.map(s => s.bpm || 0));
+  const count = {}; g.songs.forEach(s => s.sing.forEach(n => count[n] = (count[n] || 0) + 1));
+  const avg = g.songs.length ? Math.round(g.songs.reduce((a, s) => a + (s.bpm || 0), 0) / g.songs.length) : 0;
+  let h = `<div style="display:flex;flex-direction:column;gap:12px">
+    <div class="gigs">${GIGS.map(x => `<button class="gig" data-gig="${x.id}" aria-pressed="${x.id === g.id}"><b>${esc(x.date)}</b><span>${esc(x.title)}</span></button>`).join('')}</div>
+    <div class="gighead"><h2>${esc(g.title)} @${esc(g.place)}</h2><p>${esc(g.date)} · ${g.mins ? g.mins + ' นาที · ' : ''}${g.songs.length} เพลง${avg ? ' · BPM เฉลี่ย ' + avg : ''}</p></div>`;
+  if (g.songs.length) {
+    h += `<div class="flow" aria-label="ลำดับความเร็วเพลง">${g.songs.map((s, i) => `<button data-song="${s.id}" class="${s.id === songId ? 'cur' : ''}" title="${esc(s.n)} · ${s.bpm} BPM"><small>${s.bpm}</small><i style="--c:${tempoVar(s.bpm)};height:${Math.round((s.bpm / mx) * 40)}px"></i><small>${i + 1}</small></button>`).join('')}</div>
+      <div class="legend"><span style="--c:var(--slow)">ช้า ≤100</span><span style="--c:var(--mid)">กลาง 101–139</span><span style="--c:var(--fast)">เร็ว ≥140</span></div>
+      <button class="tb primary prepopen" id="prep-open">เตรียมเนื้อร้องทั้งเซ็ต · ใส่แล้ว ${g.songs.filter(s => hasLyrics(s.id)).length}/${g.songs.length}</button>
+      <ul class="list">${g.songs.map((s, i) => { const ly = hasLyrics(s.id), has = ly || !!store.get('cp.text.' + s.id, s.chart || ''); return `<li><button class="row ${s.id === songId ? 'cur' : ''}" data-song="${s.id}" style="--c:${tempoVar(s.bpm)}">
+        <span class="n">${i + 1}</span>
+        <span style="min-width:0"><span class="t">${esc(s.n)}</span><span class="a">${esc(s.a)} ${s.sing.map(singChip).join('')} <span class="dot ${ly ? 'ok' : has ? 'half' : ''}" title="${ly ? 'มีเนื้อร้องแล้ว' : has ? 'มีแต่คอร์ด' : 'ยังไม่มีคอร์ด'}"></span></span></span>
+        <span class="bpm">${s.bpm}<small>BPM</small></span></button></li>`; }).join('')}</ul>
+      <div class="legend" style="gap:12px">${Object.entries(count).map(([n, c]) => `<span style="--c:${SING[n] || 'var(--muted)'}">${esc(n)}ร้อง ${c} เพลง</span>`).join('')}<span style="--c:var(--mid)">มีเนื้อร้องแล้ว</span><span style="--c:var(--chord)">มีแต่คอร์ด</span></div>`;
+  } else h += `<div class="empty-note">ยังไม่มีรายชื่อเพลงของงานนี้ ส่งลิสต์มาให้ Claude เพิ่มให้ได้เลย</div>`;
+  $('#pane-set').innerHTML = h + '</div>';
+
+  const q = $('#q').value.trim().toLowerCase();
+  const all = [...SAMPLES.map(s => ({id: s.id, text: store.get('cp.text.' + s.id, s.text), tag: 'ตัวอย่าง'})), ...userSongs.map(s => ({id: s.id, text: s.text, tag: ''}))];
+  $('#list').innerHTML = all.map(s => { const m = parseSong(s.text).meta; return {s, m}; })
+    .filter(({m}) => !q || (m.title || '').toLowerCase().includes(q) || (m.artist || '').toLowerCase().includes(q))
+    .map(({s, m}) => `<li><button class="row ${s.id === songId ? 'cur' : ''}" data-song="${s.id}" style="grid-template-columns:minmax(0,1fr) auto;--c:${tempoVar(m.tempo)}">
+      <span style="min-width:0"><span class="t">${esc(m.title || 'ไม่มีชื่อเพลง')}</span><span class="a">${esc(m.artist || '')}${s.tag ? ' · ' + s.tag : ''}</span></span>
+      <span class="chip k">${esc(m.key || '?')}</span></button></li>`).join('') || `<li class="empty-note">ไม่พบเพลงที่ค้นหา</li>`;
+}
+
+function renderHead() {
+  const s = cur.song;
+  $('#s-eyebrow').textContent = s.kind === 'set' ? `เพลงที่ ${s.idx + 1} จาก ${s.gig.songs.length} · ${s.gig.title}` : (s.kind === 'sample' ? 'เพลงตัวอย่าง' : 'เพลงของฉัน');
+  $('#s-title').textContent = cur.title;
+  let c = '';
+  if (cur.artist) c += `<span class="chip">${esc(cur.artist)}</span>`;
+  if (s.entry) c += s.entry.sing.map(singChip).join('') + (s.entry.note ? `<span class="chip">${esc(s.entry.note)}</span>` : '');
+  if (cur.key) c += `<span class="chip k">คีย์ต้นฉบับ ${keyName(cur.key.pc, cur.key.minor)}</span>` + (cur.autoKey ? `<span class="chip auto">ตรวจคีย์อัตโนมัติ</span>` : '');
+  if (cur.bpm) c += `<span class="chip tempo" style="--c:${tempoVar(cur.bpm)}">${cur.bpm} BPM${cur.beats !== 4 ? ' · ' + cur.beats + '/4' : ''}</span>`;
+  if (s.entry && s.entry.src) c += `<a class="chip src" href="${esc(s.entry.src)}" target="_blank" rel="noopener">เนื้อร้อง + คอร์ดเต็ม ที่ dochord ↗</a>`;
+  $('#s-chips').innerHTML = c;
+  $('#edit').textContent = cur.parsed.chords.length || s.kind !== 'set' ? 'แก้ไขคอร์ด' : 'ใส่คอร์ด';
+  document.title = cur.title + ' · คอร์ดเพลิน';
+}
+
+function renderToolbar() {
+  const has = !!cur.key;
+  const sel = $('#key-sel'); sel.disabled = !has;
+  if (has) {
+    let o = ''; for (let d = -6; d <= 5; d++) o += `<option value="${d}" ${d === norm(state.t) ? 'selected' : ''}>${keyName((cur.key.pc + d + 12) % 12, cur.key.minor)}</option>`;
+    sel.innerHTML = o;
+  } else sel.innerHTML = '<option>—</option>';
+  const t = norm(state.t); $('#t-delta').textContent = t === 0 ? '±0' : (t > 0 ? '+' : '') + t;
+  $('#capo-n').textContent = state.capo; $('#capo-grp').hidden = state.inst === 'piano';
+  $('#m-chord').setAttribute('aria-pressed', !state.nash); $('#m-nash').setAttribute('aria-pressed', state.nash);
+  $('#simp').setAttribute('aria-pressed', state.simp); $('#cols').setAttribute('aria-pressed', state.cols);
+  document.querySelectorAll('#inst button').forEach(b => b.setAttribute('aria-pressed', b.dataset.inst === state.inst));
+  $('#speed').value = state.speed; $('#speed-v').textContent = '×' + Number(state.speed).toFixed(2).replace(/0$/, '');
+  $('#metro-bpm').textContent = cur.bpm || '';
+  $('#metro').disabled = !cur.bpm;
+
+  // capo suggestion
+  const sg = $('#suggest'); const uniq = [...new Set(cur.parsed.chords)];
+  if (!has || !uniq.length || state.inst === 'piano') { sg.innerHTML = ''; return; }
+  const cost = c => { let tot = 0; const fl = useFlat((cur.key.pc + state.t - c + 120) % 12, cur.key.minor);
+    for (const raw of uniq) { const p = parseChord(raw); let q = state.simp ? QUAL[p.q].simp : p.q; const r = (p.root + state.t - c + 120) % 12;
+      tot += voicing(state.inst, r, q, state.simp || p.bass == null ? null : (p.bass + state.t - c + 120) % 12).cost; } return tot + c * 0.25; };
+  const opts = []; for (let c = 0; c <= 7; c++) opts.push({c, s: cost(c), shapeKey: keyName((cur.key.pc + state.t - c + 120) % 12, cur.key.minor)});
+  const sorted = opts.slice().sort((a, b) => a.s - b.s); const best = sorted[0];
+  const here = opts[state.capo];
+  let h = `<span>เสียงจริง <b style="color:var(--chord);font-family:var(--font-mono)">${soundingKeyName()}</b>${state.capo ? ` · จับท่าคีย์ <b style="font-family:var(--font-mono)">${keyName((cur.key.pc + shift() + 120) % 12, cur.key.minor)}</b>` : ''}</span><span>·</span>`;
+  if (here && here.s <= best.s + 0.01) h += `<span class="ok">✓ ท่าคอร์ดนี้เล่นง่ายที่สุดแล้วสำหรับ${state.inst === 'uke' ? 'อูคูเลเล่' : 'กีตาร์'}</span>`;
+  else { h += `<span>แนะนำท่าที่ง่ายกว่า:</span>`; sorted.slice(0, 3).forEach(o => { if (o.c !== state.capo) h += `<button data-capo="${o.c}">${o.c ? 'คาโป้ ' + o.c : 'ไม่ใส่คาโป้'} · ท่า <b>${o.shapeKey}</b></button>`; }); }
+  sg.innerHTML = h;
+}
+
+function chordHTML(raw) {
+  const r = xform(raw); if (!r) return `<b class="ch raw">${esc(raw)}</b>`;
+  return `<b class="ch" data-shape="${esc(r.shape)}" tabindex="0" role="button" aria-label="คอร์ด ${esc(r.shape)}">${esc(r.disp)}</b>`;
+}
+function sheetHTML(items) {
+  const blocks = []; let b = {label: null, items: []};
+  for (const it of items) { if (it.type === 'section') { if (b.items.length || b.label) blocks.push(b); b = {label: it.label, items: []}; } else b.items.push(it); }
+  blocks.push(b);
+  return blocks.map(bl => {
+    const its = bl.items.slice(); while (its.length && its[0].type === 'blank') its.shift(); while (its.length && its[its.length - 1].type === 'blank') its.pop();
+    if (!its.length && !bl.label) return '';
+    return `<div class="block">${bl.label ? `<h3 class="sec">${esc(bl.label)}</h3>` : ''}${its.map(it => {
+      if (it.type === 'blank') return '<div class="gap"></div>';
+      if (!it.hasChord) return `<div class="ln"><span class="ly">${esc(it.segs.map(s => s.t).join(''))}</span></div>`;
+      const co = it.segs.every(s => !s.t.trim());
+      return `<div class="ln has ${co ? 'co' : ''}">${it.segs.filter(s => !co || s.c).map(s => `<span class="seg">${s.c ? chordHTML(s.c) : '<b class="ch"></b>'}<span class="ly">${esc(s.t)}</span></span>`).join('')}</div>`;
+    }).join('')}</div>`;
+  }).join('');
+}
+function renderSheet() {
+  document.documentElement.style.setProperty('--fs', (1.2 * state.size).toFixed(2) + 'rem');
+  const sh = $('#sheet'); sh.classList.toggle('cols2', state.cols);
+  const strip = $('#strip');
+  const e0 = cur.song.entry;
+  const srcLink = e0 && e0.src ? `<a href="${esc(e0.src)}" target="_blank" rel="noopener">หน้าเพลงนี้ใน dochord ↗</a>` : 'หน้าคอร์ดเพลงนี้';
+  const pasteUI = (h, open) => `<div class="emptysong">
+      ${h}
+      <ol><li>เปิด${srcLink} ลากคลุมตั้งแต่บรรทัดแรกของเพลงจนจบ แล้วคัดลอก</li><li>วางลงในช่องด้านล่าง ไม่ต้องจัดอะไรเพิ่ม คอร์ดที่ติดอยู่กับเนื้อ หรืออยู่บรรทัดบนเนื้อ จะถูกจัดให้อยู่เหนือพยางค์ที่ถูกต้องเอง</li><li>กดบันทึก ระบบจะตรวจคีย์ ทำแผนภาพคอร์ด และแนะนำคาโป้ให้</li></ol>
+      <textarea id="paste" rows="${open ? 10 : 7}" spellcheck="false" placeholder="วางเนื้อร้องพร้อมคอร์ดที่คัดลอกมาตรงนี้"></textarea>
+      <div class="row2"><label for="paste-key" style="font-size:.85rem;color:var(--muted)">คีย์ต้นฉบับ</label>
+        <select id="paste-key" class="tb"><option value="">ให้ระบบตรวจเอง</option>${SHARP.map((n, i) => `<option>${noteName(i, FLAT_MAJ.includes(i))}</option>`).join('')}${SHARP.map((n, i) => `<option>${noteName(i, FLAT_MAJ.includes((i + 3) % 12))}m</option>`).join('')}</select>
+        <button class="tb primary" id="paste-save">บันทึกเนื้อร้อง + คอร์ด</button></div>
+    </div>`;
+  if (!cur.parsed.items.some(i => i.type === 'line')) {
+    strip.innerHTML = '';
+    sh.innerHTML = pasteUI(`<h3>ยังไม่มีคอร์ดเพลง “${esc(cur.title)}”</h3><p>คัดลอกเนื้อร้องพร้อมคอร์ดจากเว็บที่ใช้ประจำมาวางได้เลย</p>`, true);
+    return;
+  }
+  const chartOnly = e0 && e0.src && cur.song.text === e0.chart;
+  sh.innerHTML = (chartOnly ? `<details class="pastebox"><summary>＋ ใส่เนื้อร้องให้เพลงนี้ (ใช้เวลาไม่ถึงนาที)</summary>${pasteUI('<p>ตอนนี้เป็นชาร์ตคอร์ดอย่างเดียว: 1 แถว = 1 บรรทัดเนื้อร้อง ตามลำดับในหน้า dochord ถ้าอยากเห็นเนื้อร้องอยู่ใต้คอร์ดบนเวที ให้วางจากหน้าเว็บตามนี้</p>', false)}</details>` : '') + sheetHTML(cur.parsed.items);
+  const seen = new Map();
+  cur.parsed.chords.forEach(raw => { const r = xform(raw); if (r && !seen.has(r.shape)) seen.set(r.shape, r); });
+  strip.innerHTML = [...seen.values()].map(r => { const p = parseChord(r.shape); const ap = QUAL[p.q].approx && state.inst !== 'piano';
+    return `<button class="card" data-shape="${esc(r.shape)}" title="แตะเพื่อฟังเสียง"><div class="nm">${esc(state.nash ? r.disp : r.shape)}</div><div class="sub">${state.nash ? esc(r.shape) : ap ? 'ท่าใกล้เคียง' : p.bass != null && state.inst !== 'piano' && !guitarVoicing(p.root, p.q, p.bass).bassOk ? 'เบส ' + noteName(p.bass, shapeFlat()) : ''}</div>${diagram(r.shape, 60)}</button>`; }).join('');
+}
+
+function renderNext() {
+  const s = cur.song; const nx = $('#nextup');
+  if (s.kind !== 'set') { nx.innerHTML = ''; $('#sb-info').textContent = cur.title; $('#sb-prev').disabled = $('#sb-next').disabled = true; return; }
+  const p = s.gig.songs[s.idx - 1], n = s.gig.songs[s.idx + 1];
+  const card = (x, i, cls, lbl) => x ? `<button class="nav ${cls}" data-song="${x.id}"><small>${lbl}</small><b>${i}. ${esc(x.n)}</b><span>${esc(x.a)} · ${x.bpm} BPM · ${x.sing.join(' + ')}</span></button>` : `<button class="nav ${cls}" disabled><small>${lbl}</small><b>${cls === 'next' ? 'จบเซ็ต' : 'เพลงแรก'}</b><span>&nbsp;</span></button>`;
+  nx.innerHTML = card(p, s.idx, 'prev', '◀ ก่อนหน้า') + card(n, s.idx + 2, 'next', 'เพลงถัดไป ▶');
+  $('#sb-info').innerHTML = `<b>${s.idx + 1}/${s.gig.songs.length}</b> ${esc(cur.title)}${n ? ` · ถัดไป: ${esc(n.n)} (${n.bpm})` : ' · เพลงสุดท้าย'}`;
+  $('#sb-prev').disabled = !p; $('#sb-next').disabled = !n;
+}
+function go(dir) { const s = cur.song; if (s.kind !== 'set') return; const x = s.gig.songs[s.idx + dir]; if (x) { const m = metro.on; loadSong(x.id); if (m) setMetro(true); } }
+
+/* ================= auto-scroll ================= */
+let scrolling = false, acc = 0, lastTs = 0;
+function frame(ts) {
+  if (!scrolling) return;
+  const dt = Math.min(0.1, (ts - lastTs) / 1000); lastTs = ts;
+  const max = document.documentElement.scrollHeight - innerHeight;
+  acc += (Math.max(max, 1) / (cur.dur * 0.92)) * state.speed * dt;
+  const px = Math.floor(acc); if (px >= 1) { window.scrollBy(0, px); acc -= px; }
+  if (window.scrollY >= max - 1) { stopScroll(); return; }
+  requestAnimationFrame(frame);
+}
+function startScroll() { scrolling = true; acc = 0; lastTs = performance.now(); requestAnimationFrame(frame); setPlayUI(); }
+function stopScroll() { scrolling = false; setPlayUI(); }
+function setPlayUI() { $('#play-ic').innerHTML = scrolling ? '<path d="M2 1h3v10H2zM7 1h3v10H7z"/>' : '<path d="M2 1l9 5-9 5z"/>'; $('#play-t').textContent = scrolling ? 'หยุด' : 'เลื่อน'; }
+window.addEventListener('scroll', () => { const max = document.documentElement.scrollHeight - innerHeight; $('#prog').style.width = (max > 0 ? Math.min(100, window.scrollY / max * 100) : 0) + '%'; }, {passive: true});
+
+/* ================= stage ================= */
+let wake = null;
+async function setStage(on) {
+  document.body.classList.toggle('stage', on); $('#stage').setAttribute('aria-pressed', on);
+  if (on) { try { wake = await navigator.wakeLock.request('screen'); } catch (e) { wake = null; }
+            try { if (document.documentElement.requestFullscreen && !document.fullscreenElement) await document.documentElement.requestFullscreen(); } catch (e) {} }
+  else { try { wake && wake.release(); } catch (e) {} wake = null; try { if (document.fullscreenElement) await document.exitFullscreen(); } catch (e) {} }
+}
+
+/* ================= export ================= */
+function vwidth(s) { let w = 0; for (const ch of s) if (!THAI_COMB.test(ch)) w++; return w; }
+function exportText() {
+  const out = [cur.title + (cur.artist ? ' - ' + cur.artist : '')];
+  if (cur.key) out.push(`คีย์ ${soundingKeyName()}` + (state.capo && state.inst !== 'piano' ? ` (คาโป้ ${state.capo} จับท่า ${keyName((cur.key.pc + shift() + 120) % 12, cur.key.minor)})` : '') + (cur.bpm ? ` · ${cur.bpm} BPM` : ''));
+  out.push('');
+  for (const it of cur.parsed.items) {
+    if (it.type === 'section') { out.push('[' + it.label + ']'); continue; }
+    if (it.type === 'blank') { out.push(''); continue; }
+    if (!it.hasChord) { out.push(it.segs.map(s => s.t).join('')); continue; }
+    let cl = '', ll = '';
+    for (const s of it.segs) {
+      if (s.c) { const r = xform(s.c); const name = r ? r.disp : s.c; const w = vwidth(ll);
+        if (cl.length > w) { ll += ' '.repeat(cl.length - w + (cl.length ? 1 : 0)); }
+        cl += ' '.repeat(Math.max(0, vwidth(ll) - cl.length)) + name + ' '; }
+      ll += s.t;
+    }
+    out.push(cl.replace(/\s+$/, '')); if (ll.trim()) out.push(ll.replace(/\s+$/, ''));
+  }
+  return out.join('\n').replace(/\n{3,}/g, '\n\n');
+}
+function copyText(text, okMsg) {
+  const fallback = () => { $('#io-h').textContent = 'คัดลอกข้อความ'; $('#io-msg').textContent = 'เลือกข้อความทั้งหมดแล้วคัดลอกเอง'; $('#io-text').value = text; $('#io-go').hidden = true; $('#io').hidden = false; $('#io-text').select(); };
+  try { navigator.clipboard.writeText(text).then(() => toast(okMsg), fallback); } catch (e) { fallback(); }
+}
+
+/* ================= editor ================= */
+let edId = null;
+function openEditor(id) {
+  edId = id; const s = id ? findSong(id) : null;
+  $('#ed-h').textContent = !s ? 'เพิ่มเพลงใหม่' : s.kind === 'set' ? `คอร์ด: ${s.entry.n}` : `แก้ไข: ${parseSong(s.text).meta.title || ''}`;
+  $('#ed-text').value = s ? s.text : `{title: }\n{artist: }\n{key: }\n{tempo: }\n\n# Intro\n\n# Verse\n`;
+  $('#ed-del').hidden = !(s && (s.kind === 'user' || (s.kind !== 'user' && store.get('cp.text.' + s.id, null) != null)));
+  $('#ed-del').textContent = s && s.kind === 'user' ? 'ลบเพลงนี้' : 'กลับไปใช้คอร์ดตั้งต้น'; $('#ed-del').dataset.armed = '';
+  $('#editor').hidden = false; edPreview(); $('#ed-text').focus();
+}
+function edPreview() { const p = parseSong($('#ed-text').value); const saved = {t: state.t, capo: state.capo, nash: state.nash, simp: state.simp}; const c = cur;
+  state.t = 0; state.capo = 0; state.nash = false; state.simp = false; cur = {...cur, key: null};
+  $('#ed-prev').innerHTML = sheetHTML(p.items) || '<p style="color:var(--muted)">ตัวอย่างจะแสดงที่นี่</p>';
+  Object.assign(state, saved); cur = c; }
+function saveEditor() {
+  let text = $('#ed-text').value;
+  if (looksChordsOver(text)) { const r = convertText(text); text = r.text; }
+  const s = edId ? findSong(edId) : null;
+  if (s && s.kind === 'set') store.set('cp.text.' + s.id, text);
+  else if (s && s.kind === 'user') { s.text = text; userSongs = userSongs.map(u => u.id === s.id ? {id: s.id, text} : u); store.set('cp.user', userSongs); }
+  else if (s && s.kind === 'sample') store.set('cp.text.' + s.id, text);
+  else { const id = 'u' + Date.now(); userSongs.push({id, text}); store.set('cp.user', userSongs); edId = id; }
+  $('#editor').hidden = true; toast('บันทึกแล้ว'); loadSong(edId || songId, true);
+}
+
+/* ================= events ================= */
+const setT = t => { state.t = norm(t); saveSongPrefs(); renderToolbar(); renderSheet(); };
+const setCapo = c => { state.capo = Math.max(0, Math.min(11, c)); saveSongPrefs(); renderToolbar(); renderSheet(); };
+$('#t-up').onclick = () => setT(state.t + 1); $('#t-down').onclick = () => setT(state.t - 1); $('#t-reset').onclick = () => { state.capo = 0; setT(0); };
+$('#key-sel').onchange = e => setT(+e.target.value);
+$('#c-up').onclick = () => setCapo(state.capo + 1); $('#c-down').onclick = () => setCapo(state.capo - 1);
+$('#m-chord').onclick = () => { state.nash = false; savePrefs(); renderToolbar(); renderSheet(); };
+$('#m-nash').onclick = () => { state.nash = true; savePrefs(); renderToolbar(); renderSheet(); };
+$('#simp').onclick = () => { state.simp = !state.simp; savePrefs(); renderToolbar(); renderSheet(); };
+$('#inst').onclick = e => { const b = e.target.closest('[data-inst]'); if (!b) return; state.inst = b.dataset.inst; savePrefs(); renderToolbar(); renderSheet(); };
+$('#f-up').onclick = () => { state.size = Math.min(2.2, +(state.size + 0.1).toFixed(2)); savePrefs(); renderSheet(); };
+$('#f-down').onclick = () => { state.size = Math.max(0.7, +(state.size - 0.1).toFixed(2)); savePrefs(); renderSheet(); };
+$('#cols').onclick = () => { state.cols = !state.cols; savePrefs(); renderToolbar(); renderSheet(); };
+$('#play').onclick = () => scrolling ? stopScroll() : startScroll();
+$('#speed').oninput = e => { state.speed = +e.target.value; $('#speed-v').textContent = '×' + state.speed.toFixed(2).replace(/0$/, ''); savePrefs(); };
+$('#metro').onclick = () => setMetro(!metro.on);
+$('#stage').onclick = () => setStage(!document.body.classList.contains('stage'));
+$('#sb-exit').onclick = () => setStage(false); $('#sb-prev').onclick = () => go(-1); $('#sb-next').onclick = () => go(1);
+$('#suggest').onclick = e => { const b = e.target.closest('[data-capo]'); if (b) { setCapo(+b.dataset.capo); toast(`ใส่คาโป้ ${b.dataset.capo} แล้ว`); } };
+$('#tab-set').onclick = () => { state.tab = 'set'; savePrefs(); renderRail(); };
+$('#tab-lib').onclick = () => { state.tab = 'lib'; savePrefs(); renderRail(); };
+$('#q').oninput = renderRail;
+$('#new').onclick = () => openEditor(null);
+$('#edit').onclick = () => openEditor(songId);
+$('#copy').onclick = () => { if (!cur.parsed.chords.length) { toast('เพลงนี้ยังไม่มีคอร์ด'); return; } copyText(exportText(), 'คัดลอกคอร์ดในคีย์นี้แล้ว วางในไลน์กลุ่มได้เลย'); };
+$('#lib-open').onclick = () => $('#lib').classList.add('open'); $('#lib-close').onclick = () => $('#lib').classList.remove('open');
+$('#lib').addEventListener('click', e => {
+  if (e.target.closest('#prep-open')) { openPrep(); return; }
+  const g = e.target.closest('[data-gig]'); if (g) { state.gig = g.dataset.gig; savePrefs(); renderRail(); return; }
+  const s = e.target.closest('[data-song]'); if (s) { loadSong(s.dataset.song); $('#lib').classList.remove('open'); }
+});
+$('#nextup').onclick = e => { const b = e.target.closest('[data-song]'); if (b) { const m = metro.on; loadSong(b.dataset.song); if (m) setMetro(true); } };
+
+// chord popover + sound
+const pop = $('#pop');
+function showPop(el) {
+  const shape = el.dataset.shape; const p = parseChord(shape); if (!p) return;
+  pop.innerHTML = `<div class="nm">${esc(state.nash ? el.textContent : shape)}</div><div class="sub">${state.nash ? esc(shape) : state.inst === 'piano' ? 'เปียโน' : state.inst === 'uke' ? 'อูคูเลเล่' : 'กีตาร์'}${state.capo && state.inst !== 'piano' ? ' · คาโป้ ' + state.capo : ''}</div>${diagram(shape, 110)}<button class="tb" data-play="${esc(shape)}">ฟังเสียงอีกครั้ง</button>`;
+  pop.hidden = false;
+  const r = el.getBoundingClientRect(); const w = pop.offsetWidth;
+  pop.style.left = Math.max(8, Math.min(window.scrollX + r.left - w / 2 + r.width / 2, window.scrollX + document.documentElement.clientWidth - w - 8)) + 'px';
+  pop.style.top = (window.scrollY + r.bottom + 6) + 'px';
+}
+document.addEventListener('click', e => {
+  const ch = e.target.closest('.sheet .ch[data-shape]');
+  if (ch && !ch.closest('#ed-prev')) { showPop(ch); playChord(ch.dataset.shape); return; }
+  const card = e.target.closest('.card[data-shape]'); if (card) { playChord(card.dataset.shape); return; }
+  const pl = e.target.closest('[data-play]'); if (pl) { playChord(pl.dataset.play); return; }
+  if (!e.target.closest('#pop')) pop.hidden = true;
+  if (e.target.id === 'paste-save') {
+    const t = preparePaste(songId, $('#paste').value, $('#paste-key').value); if (!t) { toast('วางเนื้อร้องกับคอร์ดในช่องก่อน แล้วค่อยกดบันทึก'); return; }
+    store.set('cp.text.' + songId, t); loadSong(songId);
+    const c = cur.parsed.chords.length;
+    toast(c ? `บันทึกแล้ว พบคอร์ด ${c} ตำแหน่ง${cur.key ? ' · คีย์ ' + keyName(cur.key.pc, cur.key.minor) : ''}` : 'บันทึกแล้ว แต่ยังหาคอร์ดไม่เจอ ลองกดแก้ไขคอร์ด');
+  }
+});
+document.addEventListener('keydown', e => {
+  if (e.key === 'Escape') { pop.hidden = true; $('#editor').hidden = true; $('#io').hidden = true; $('#prep').hidden = true; if (document.body.classList.contains('stage')) setStage(false); return; }
+  if (e.target.closest('input,textarea,select') || e.metaKey || e.ctrlKey || e.altKey) return;
+  const ch = e.target.closest && e.target.closest('.ch[data-shape]');
+  if (ch && e.key === 'Enter') { showPop(ch); playChord(ch.dataset.shape); return; }
+  if (!$('#editor').hidden || !$('#io').hidden) return;
+  const k = e.key;
+  if (k === ']') setT(state.t + 1); else if (k === '[') setT(state.t - 1);
+  else if (k === ' ') { e.preventDefault(); scrolling ? stopScroll() : startScroll(); }
+  else if (k === 'm' || k === 'M') setMetro(!metro.on);
+  else if (k === 'n' || k === 'N') { state.nash = !state.nash; savePrefs(); renderToolbar(); renderSheet(); }
+  else if (k === 's' || k === 'S') setStage(!document.body.classList.contains('stage'));
+  else if (k === 'ArrowRight') go(1); else if (k === 'ArrowLeft') go(-1);
+  else if (k === ',') { state.speed = Math.max(0.4, +(state.speed - 0.1).toFixed(2)); renderToolbar(); }
+  else if (k === '.') { state.speed = Math.min(2, +(state.speed + 0.1).toFixed(2)); renderToolbar(); }
+});
+
+// editor events
+$('#ed-text').oninput = edPreview;
+$('#ed-text').addEventListener('paste', () => setTimeout(() => { const v = $('#ed-text').value; if (looksChordsOver(v)) { const r = convertText(v); $('#ed-text').value = r.text; edPreview(); toast(`แปลงคอร์ดบนเนื้อให้แล้ว ${r.n} บรรทัด`); } }, 0));
+$('#ed-convert').onclick = () => { const r = convertText($('#ed-text').value); $('#ed-text').value = r.text; edPreview(); toast(r.n ? `แปลงแล้ว ${r.n} บรรทัดคอร์ด` : 'ไม่พบบรรทัดที่เป็นคอร์ดอย่างเดียว'); };
+$('#ed-close').onclick = () => $('#editor').hidden = true;
+$('#ed-save').onclick = saveEditor;
+$('#ed-del').onclick = e => {
+  const b = e.currentTarget; if (!b.dataset.armed) { b.dataset.armed = '1'; b.textContent = 'กดอีกครั้งเพื่อยืนยัน'; return; }
+  const s = findSong(edId);
+  if (s.kind === 'user') { userSongs = userSongs.filter(u => u.id !== s.id); store.set('cp.user', userSongs); $('#editor').hidden = true; loadSong(GIGS[0].songs[0].id); }
+  else { store.del('cp.text.' + s.id); $('#editor').hidden = true; loadSong(s.id); }
+  toast('ลบแล้ว');
+};
+
+// prepare lyrics for the whole set on one screen
+function openPrep() {
+  const g = GIGS.find(x => x.id === state.gig) || GIGS[0];
+  $('#prep-h').textContent = `เตรียมเนื้อร้องทั้งเซ็ต · ${g.title}`;
+  $('#prep-list').innerHTML = g.songs.map((s, i) => { const ly = hasLyrics(s.id); return `<div class="prepitem" style="--c:${tempoVar(s.bpm)}">
+    <div class="top"><span class="n">${i + 1}</span><b>${esc(s.n)}</b><span style="color:var(--muted);font-size:.85rem">${esc(s.a)}</span>
+      <span class="pill ${ly ? 'ok' : 'half'}">${ly ? 'มีเนื้อร้องแล้ว' : 'มีแต่คอร์ด'}</span>
+      ${s.src ? `<a class="tb" href="${esc(s.src)}" target="_blank" rel="noopener">เปิดหน้า dochord ↗</a>` : ''}</div>
+    <textarea data-prep="${s.id}" spellcheck="false" aria-label="วางเนื้อร้องและคอร์ดเพลง ${esc(s.n)}" placeholder="${ly ? 'วางใหม่ถ้าต้องการแทนที่ของเดิม' : 'วางเนื้อร้อง + คอร์ดของเพลงนี้ตรงนี้'}"></textarea>
+    <small class="pstat" id="pst-${s.id}"></small></div>`; }).join('');
+  $('#prep').hidden = false;
+}
+$('#prep-list').addEventListener('input', e => {
+  const ta = e.target.closest('textarea[data-prep]'); if (!ta) return;
+  const st = $('#pst-' + ta.dataset.prep); const t = preparePaste(ta.dataset.prep, ta.value);
+  if (!t) { st.textContent = ''; st.className = 'pstat'; return; }
+  const p = parseSong(t); const lyr = t.split('\n').some(l => !/^\s*[#{]/.test(l) && HAS_THAI.test(l.replace(/\[[^\]]*\]/g, '')));
+  st.className = 'pstat ' + (p.chords.length && lyr ? 'ok' : 'warn');
+  st.textContent = p.chords.length && lyr ? `✓ พร้อมบันทึก · พบคอร์ด ${p.chords.length} ตำแหน่ง` : !p.chords.length ? '⚠ ยังไม่พบคอร์ด ตรวจว่าคัดลอกมาจากหน้าคอร์ด และลากคลุมครบ' : '⚠ พบแต่คอร์ด ยังไม่มีเนื้อร้อง';
+});
+$('#prep-close').onclick = () => $('#prep').hidden = true;
+$('#prep-save').onclick = () => {
+  let n = 0;
+  document.querySelectorAll('#prep-list textarea[data-prep]').forEach(ta => { const t = preparePaste(ta.dataset.prep, ta.value); if (t) { store.set('cp.text.' + ta.dataset.prep, t); n++; } });
+  if (!n) { toast('ยังไม่ได้วางเพลงไหนเลย'); return; }
+  $('#prep').hidden = true; loadSong(songId, true); toast(`บันทึกเนื้อร้องแล้ว ${n} เพลง อย่าลืมกดคัดลอกข้อมูลสำรองเก็บไว้`);
+};
+
+// backup / restore
+$('#backup').onclick = () => { const data = {}; store.keys().forEach(k => data[k] = store.get(k, null)); copyText(JSON.stringify({app: 'chordploen', v: 1, data}), 'คัดลอกข้อมูลสำรองแล้ว เก็บไว้ในโน้ตหรือส่งให้ตัวเองในไลน์'); };
+$('#restore').onclick = () => { $('#io-h').textContent = 'กู้คืนข้อมูล'; $('#io-msg').textContent = 'วางข้อมูลสำรองที่เคยคัดลอกไว้ แล้วกดกู้คืน คอร์ดที่มีอยู่จะถูกแทนที่ด้วยข้อมูลชุดนี้'; $('#io-text').value = ''; $('#io-go').hidden = false; $('#io').hidden = false; $('#io-text').focus(); };
+$('#io-close').onclick = () => $('#io').hidden = true;
+$('#io-go').onclick = () => {
+  try { const j = JSON.parse($('#io-text').value); if (j.app !== 'chordploen' || !j.data) throw 0;
+    Object.entries(j.data).forEach(([k, v]) => k.startsWith('cp.') && store.set(k, v));
+    userSongs = store.get('cp.user', []); $('#io').hidden = true; loadSong(songId); toast('กู้คืนข้อมูลแล้ว');
+  } catch (e) { $('#io-msg').textContent = 'ข้อมูลนี้อ่านไม่ได้ ตรวจว่าคัดลอกมาครบตั้งแต่ { จนถึง }'; }
+};
+
+loadSong(songId);
+})();
+</script>
