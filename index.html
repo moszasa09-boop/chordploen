@@ -122,10 +122,11 @@ a.chip.src:hover{text-decoration:underline}
 .pastebox .emptysong{margin-top:10px}
 .emptysong a{color:var(--accent);font-weight:600}
 /* stage: bigger, bolder, higher contrast for reading from a mic stand */
-body.stage .sheet{font-size:calc(var(--fs) * 1.25)}
+body.stage .sheet{font-size:calc(var(--fs) * 1.2)}
 body.stage .ly{font-weight:500;color:var(--fg)}
-body.stage .ch{font-size:.9em;letter-spacing:.01em}
+body.stage .ch{font-size:1em;letter-spacing:.01em}
 body.stage .ln.has{margin-top:.45em}
+body.stage .main{padding-bottom:160px}
 body.stage .pastebox,body.stage .strip,body.stage .chips,body.stage .eyebrow{display:none}
 body.stage h1{margin:0}
 body.stage .toolbar{margin-top:6px}
@@ -152,7 +153,15 @@ body.stage .toolbar{margin-top:6px}
 .seg2 button[aria-pressed="true"]{background:var(--fg);color:var(--bg);font-weight:600}
 .play{display:flex;align-items:center;gap:6px;border:0;background:var(--accent);color:var(--accent-fg);border-radius:8px;padding:6px 11px;font-weight:600;font-size:.88rem}
 .play svg{width:12px;height:12px;fill:currentColor}
-#speed{width:84px;accent-color:var(--accent)}
+.spd{display:inline-flex;align-items:center;gap:4px}
+.spd-v{min-width:1.8em;font-size:1.05rem}
+.spd-l{font-size:.75rem;color:var(--muted)}
+@media (pointer:coarse){
+  .tb,.ib{padding:8px 12px;font-size:.95rem;min-height:40px}
+  .ib{min-width:42px}
+  .play{padding:9px 14px;font-size:.95rem;min-height:40px}
+  .seg2 button{padding:8px 11px;font-size:.92rem}
+}
 .led{width:12px;height:12px;border-radius:50%;background:var(--panel-2);border:1px solid var(--line);transition:background .06s}
 .led.hit{background:var(--mid);box-shadow:0 0 10px var(--mid)}
 .led.hit.acc{background:var(--chord);box-shadow:0 0 12px var(--chord)}
@@ -191,15 +200,15 @@ body.stage .toolbar{margin-top:6px}
 .ln{line-height:1.3;margin:.1em 0}
 .ln.has{margin-top:.25em}
 .seg{display:inline-flex;flex-direction:column;vertical-align:bottom;max-width:100%}
-.ch{display:block;min-height:1.35em;font-family:var(--font-mono);font-weight:700;font-size:.8em;color:var(--chord);padding-right:.55em;white-space:nowrap;cursor:pointer;line-height:1.6}
+.ch{display:block;min-height:1.35em;font-family:var(--font-mono);font-weight:700;font-size:.95em;color:var(--chord);padding-right:.55em;white-space:nowrap;cursor:pointer;line-height:1.6}
 .ch:empty{cursor:default}
 .ch:not(:empty):hover{text-decoration:underline;text-underline-offset:3px}
 .ch.raw{color:var(--muted);cursor:default}
-.ly{white-space:pre-wrap}
+.ly{white-space:pre-wrap;font-weight:500}
 .ly:empty::after{content:"\00a0"}
 .ln.co .ly{display:none}
 .ln.co .seg{margin-right:.9em}
-.ln.co .ch{font-size:.9em;padding:.1em .5em;background:var(--chord-soft);border-radius:6px;margin-bottom:.2em}
+.ln.co .ch{font-size:1.05em;padding:.1em .5em;background:var(--chord-soft);border-radius:6px;margin-bottom:.2em}
 .gap{height:.7em}
 
 .emptysong{margin-top:18px;border:1px solid var(--line);background:var(--panel);border-radius:14px;padding:18px;display:flex;flex-direction:column;gap:12px;max-width:760px}
@@ -245,8 +254,9 @@ body.stage .lib,body.stage .actions,body.stage .suggest,body.stage .grp:not(.cor
 body.stage .app{grid-template-columns:minmax(0,1fr)}
 body.stage h1{font-size:1.8rem}
 body.stage .songhead{padding-top:10px}
-body.stage .stagebar{display:flex;position:fixed;left:0;right:0;bottom:0;z-index:15;gap:8px;align-items:center;background:var(--panel);border-top:1px solid var(--line);padding:8px max(16px,env(safe-area-inset-right,0px)) calc(8px + env(safe-area-inset-bottom,0px)) max(16px,env(safe-area-inset-left,0px))}
-.stagebar .info{flex:1;min-width:0;font-size:.85rem;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;text-align:center}
+body.stage .stagebar{display:flex;flex-direction:column;position:fixed;left:0;right:0;bottom:0;z-index:15;gap:8px;align-items:center;background:var(--panel);border-top:1px solid var(--line);padding:8px max(16px,env(safe-area-inset-right,0px)) calc(8px + env(safe-area-inset-bottom,0px)) max(16px,env(safe-area-inset-left,0px))}
+.stagebar .info{width:100%;min-width:0;font-size:.9rem;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;text-align:center}
+.sbrow{display:flex;gap:8px;align-items:center;justify-content:center;flex-wrap:wrap;width:100%}
 .stagebar .info b{color:var(--fg)}
 
 @media (max-width:900px){
@@ -286,7 +296,7 @@ body.stage .stagebar{display:flex;position:fixed;left:0;right:0;bottom:0;z-index
       </div>
     </div>
     <div class="libfoot">
-      <div><kbd>[</kbd> <kbd>]</kbd> ลด/เพิ่มคีย์ · <kbd>Space</kbd> เลื่อน · <kbd>M</kbd> คลิก · <kbd>←</kbd> <kbd>→</kbd> เพลงก่อน/ถัดไป · <kbd>S</kbd> โหมดเวที</div>
+      <div><kbd>[</kbd> <kbd>]</kbd> ลด/เพิ่มคีย์ · <kbd>Space</kbd> เลื่อน · <kbd>,</kbd> <kbd>.</kbd> ช้าลง/เร็วขึ้น · <kbd>M</kbd> คลิก · <kbd>←</kbd> <kbd>→</kbd> เพลงก่อน/ถัดไป · <kbd>S</kbd> โหมดเวที</div>
       <div class="sync"><span class="sdot" id="sync-dot"></span><span id="sync-txt" style="flex:1;min-width:0">ยังไม่ได้เชื่อมซิงก์ข้ามเครื่อง</span><button class="tb" id="sync-open">ตั้งค่าซิงก์</button></div>
       <div class="btns"><button class="tb" id="backup">คัดลอกข้อมูลสำรอง</button><button class="tb" id="restore">กู้คืน</button></div>
     </div>
@@ -334,8 +344,7 @@ body.stage .stagebar{display:flex;position:fixed;left:0;right:0;bottom:0;z-index
       </div>
       <div class="grp core">
         <button class="play" id="play" title="เลื่อนอัตโนมัติ (Space)"><svg viewBox="0 0 12 12" id="play-ic"><path d="M2 1l9 5-9 5z"/></svg><span id="play-t">เลื่อน</span></button>
-        <input type="range" id="speed" min="0.4" max="2" step="0.05" value="1" aria-label="ความเร็วเลื่อน">
-        <span class="num" id="speed-v" style="min-width:3em">×1.0</span>
+        <span class="spd" role="group" aria-label="ความเร็วเลื่อน"><button class="ib" data-spd="-1" aria-label="เลื่อนช้าลง">−</button><span class="num spd-v" title="ความเร็วเลื่อน 1–20">4</span><button class="ib" data-spd="1" aria-label="เลื่อนเร็วขึ้น">+</button></span>
       </div>
       <div class="grp core">
         <button class="tb metro" id="metro" aria-pressed="false" title="คลิกตาม BPM (M)">คลิก <span id="metro-bpm"></span></button>
@@ -352,10 +361,15 @@ body.stage .stagebar{display:flex;position:fixed;left:0;right:0;bottom:0;z-index
 </div>
 
 <div class="stagebar" id="stagebar">
-  <button class="tb" id="sb-prev">◀ ก่อนหน้า</button>
   <div class="info" id="sb-info"></div>
-  <button class="tb primary" id="sb-next">ถัดไป ▶</button>
-  <button class="tb" id="sb-exit">ออก</button>
+  <div class="sbrow">
+    <button class="tb" id="sb-prev">◀ ก่อนหน้า</button>
+    <button class="play" id="sb-play"><svg viewBox="0 0 12 12" id="sb-play-ic"><path d="M2 1l9 5-9 5z"/></svg><span id="sb-play-t">เลื่อน</span></button>
+    <span class="spd" role="group" aria-label="ความเร็วเลื่อน"><span class="spd-l">ช้า</span><button class="ib" data-spd="-1" aria-label="เลื่อนช้าลง">−</button><span class="num spd-v">4</span><button class="ib" data-spd="1" aria-label="เลื่อนเร็วขึ้น">+</button><span class="spd-l">เร็ว</span></span>
+    <span class="spd" role="group" aria-label="ขนาดตัวอักษร"><button class="ib" data-fs="-1" aria-label="ตัวเล็กลง">A−</button><button class="ib" data-fs="1" aria-label="ตัวใหญ่ขึ้น">A+</button></span>
+    <button class="tb primary" id="sb-next">ถัดไป ▶</button>
+    <button class="tb" id="sb-exit">ออก</button>
+  </div>
 </div>
 
 <div class="pop" id="pop" hidden></div>
@@ -1485,11 +1499,11 @@ function preparePaste(id, raw, keyOverride) {
 /* ================= state ================= */
 const G = store.get('cp.prefs', {});
 const GIGV = 3, newGig = G.gigv !== GIGV;
-const state = {inst: G.inst || 'guitar', nash: !!G.nash, simp: !!G.simp, size: G.size || 1, cols: !!G.cols, speed: G.speed || 1, tab: newGig ? 'set' : (G.tab || 'set'), gig: newGig ? 'gqad' : (G.gig || GIGS[0].id), t: 0, capo: 0};
+const state = {inst: G.inst || 'guitar', nash: !!G.nash, simp: !!G.simp, size: G.size || 1, cols: !!G.cols, lvl: G.lvl || 4, tab: newGig ? 'set' : (G.tab || 'set'), gig: newGig ? 'gqad' : (G.gig || GIGS[0].id), t: 0, capo: 0};
 let songId = newGig ? 'gqad-1' : (G.last && findSong(G.last) ? G.last : GIGS[0].songs[0].id);
 let cur = null;
-const savePrefs = () => store.set('cp.prefs', {inst: state.inst, nash: state.nash, simp: state.simp, size: state.size, cols: state.cols, speed: state.speed, tab: state.tab, gig: state.gig, last: songId, gigv: GIGV});
-const saveSongPrefs = () => store.set(spkey(songId), {t: state.t, capo: state.capo});
+const savePrefs = () => store.set('cp.prefs', {inst: state.inst, nash: state.nash, simp: state.simp, size: state.size, cols: state.cols, lvl: state.lvl, tab: state.tab, gig: state.gig, last: songId, gigv: GIGV});
+const saveSongPrefs = () => store.set(spkey(songId), {t: state.t, capo: state.capo, lvl: state.lvl});
 const norm = t => ((t + 6) % 12 + 12) % 12 - 6;
 
 function loadSong(id, keepScroll) {
@@ -1502,7 +1516,7 @@ function loadSong(id, keepScroll) {
   cur = {song: s, parsed: p, title: p.meta.title || e.n || 'ไม่มีชื่อเพลง', artist: p.meta.artist || e.a || '',
          bpm: p.meta.tempo || e.bpm || null, dur: p.meta.duration || 240, key, autoKey: auto,
          beats: p.meta.time && /^3\//.test(p.meta.time) ? 3 : p.meta.time && /^6\//.test(p.meta.time) ? 6 : 4};
-  const sp = store.get(spkey(songId), {t: 0, capo: 0}); state.t = sp.t || 0; state.capo = sp.capo || 0;
+  const sp = store.get(spkey(songId), {t: 0, capo: 0}); state.t = sp.t || 0; state.capo = sp.capo || 0; if (sp.lvl) state.lvl = sp.lvl;
   if (s.gig) state.gig = s.gig.id;
   savePrefs(); renderAll();
   if (!keepScroll) window.scrollTo(0, 0);
@@ -1586,7 +1600,7 @@ function renderToolbar() {
   $('#m-chord').setAttribute('aria-pressed', !state.nash); $('#m-nash').setAttribute('aria-pressed', state.nash);
   $('#simp').setAttribute('aria-pressed', state.simp); $('#cols').setAttribute('aria-pressed', state.cols);
   document.querySelectorAll('#inst button').forEach(b => b.setAttribute('aria-pressed', b.dataset.inst === state.inst));
-  $('#speed').value = state.speed; $('#speed-v').textContent = '×' + Number(state.speed).toFixed(2).replace(/0$/, '');
+  setSpeedUI();
   $('#metro-bpm').textContent = cur.bpm || '';
   $('#metro').disabled = !cur.bpm;
 
@@ -1625,7 +1639,7 @@ function sheetHTML(items) {
   }).join('');
 }
 function renderSheet() {
-  document.documentElement.style.setProperty('--fs', (1.2 * state.size).toFixed(2) + 'rem');
+  document.documentElement.style.setProperty('--fs', (1.5 * state.size).toFixed(2) + 'rem');
   const sh = $('#sheet'); sh.classList.toggle('cols2', state.cols);
   const strip = $('#strip');
   const e0 = cur.song.entry;
@@ -1669,14 +1683,21 @@ function frame(ts) {
   if (!scrolling) return;
   const dt = Math.min(0.1, (ts - lastTs) / 1000); lastTs = ts;
   const max = document.documentElement.scrollHeight - innerHeight;
-  acc += (Math.max(max, 1) / (cur.dur * 0.92)) * state.speed * dt;
+  acc += state.lvl * 3.5 * state.size * dt;   // level 4 ≈ one sung line every 4–5 s
   const px = Math.floor(acc); if (px >= 1) { window.scrollBy(0, px); acc -= px; }
   if (window.scrollY >= max - 1) { stopScroll(); return; }
   requestAnimationFrame(frame);
 }
 function startScroll() { scrolling = true; acc = 0; lastTs = performance.now(); requestAnimationFrame(frame); setPlayUI(); }
 function stopScroll() { scrolling = false; setPlayUI(); }
-function setPlayUI() { $('#play-ic').innerHTML = scrolling ? '<path d="M2 1h3v10H2zM7 1h3v10H7z"/>' : '<path d="M2 1l9 5-9 5z"/>'; $('#play-t').textContent = scrolling ? 'หยุด' : 'เลื่อน'; }
+function setPlayUI() {
+  const ic = scrolling ? '<path d="M2 1h3v10H2zM7 1h3v10H7z"/>' : '<path d="M2 1l9 5-9 5z"/>';
+  $('#play-ic').innerHTML = ic; $('#sb-play-ic').innerHTML = ic;
+  $('#play-t').textContent = $('#sb-play-t').textContent = scrolling ? 'หยุด' : 'เลื่อน';
+}
+function setSpeedUI() { document.querySelectorAll('.spd-v').forEach(e => e.textContent = state.lvl); }
+function setSpeed(d) { state.lvl = Math.max(1, Math.min(20, state.lvl + d)); setSpeedUI(); savePrefs(); saveSongPrefs(); toast(`ความเร็วเลื่อน ${state.lvl}${state.lvl <= 3 ? ' (ช้า)' : state.lvl >= 9 ? ' (เร็ว)' : ''}`); }
+function setSize(d) { state.size = Math.max(0.7, Math.min(2.4, +(state.size + d * 0.1).toFixed(2))); savePrefs(); renderSheet(); }
 window.addEventListener('scroll', () => { const max = document.documentElement.scrollHeight - innerHeight; $('#prog').style.width = (max > 0 ? Math.min(100, window.scrollY / max * 100) : 0) + '%'; }, {passive: true});
 
 /* ================= stage ================= */
@@ -1749,11 +1770,12 @@ $('#m-chord').onclick = () => { state.nash = false; savePrefs(); renderToolbar()
 $('#m-nash').onclick = () => { state.nash = true; savePrefs(); renderToolbar(); renderSheet(); };
 $('#simp').onclick = () => { state.simp = !state.simp; savePrefs(); renderToolbar(); renderSheet(); };
 $('#inst').onclick = e => { const b = e.target.closest('[data-inst]'); if (!b) return; state.inst = b.dataset.inst; savePrefs(); renderToolbar(); renderSheet(); };
-$('#f-up').onclick = () => { state.size = Math.min(2.2, +(state.size + 0.1).toFixed(2)); savePrefs(); renderSheet(); };
-$('#f-down').onclick = () => { state.size = Math.max(0.7, +(state.size - 0.1).toFixed(2)); savePrefs(); renderSheet(); };
+$('#f-up').onclick = () => setSize(1);
+$('#f-down').onclick = () => setSize(-1);
 $('#cols').onclick = () => { state.cols = !state.cols; savePrefs(); renderToolbar(); renderSheet(); };
 $('#play').onclick = () => scrolling ? stopScroll() : startScroll();
-$('#speed').oninput = e => { state.speed = +e.target.value; $('#speed-v').textContent = '×' + state.speed.toFixed(2).replace(/0$/, ''); savePrefs(); };
+document.addEventListener('click', e => { const b = e.target.closest('[data-spd]'); if (b) setSpeed(+b.dataset.spd); const f = e.target.closest('[data-fs]'); if (f) setSize(+f.dataset.fs); });
+$('#sb-play').onclick = () => scrolling ? stopScroll() : startScroll();
 $('#metro').onclick = () => setMetro(!metro.on);
 $('#stage').onclick = () => setStage(!document.body.classList.contains('stage'));
 $('#sb-exit').onclick = () => setStage(false); $('#sb-prev').onclick = () => go(-1); $('#sb-next').onclick = () => go(1);
@@ -1808,8 +1830,8 @@ document.addEventListener('keydown', e => {
   else if (k === 'n' || k === 'N') { state.nash = !state.nash; savePrefs(); renderToolbar(); renderSheet(); }
   else if (k === 's' || k === 'S') setStage(!document.body.classList.contains('stage'));
   else if (k === 'ArrowRight') go(1); else if (k === 'ArrowLeft') go(-1);
-  else if (k === ',') { state.speed = Math.max(0.4, +(state.speed - 0.1).toFixed(2)); renderToolbar(); }
-  else if (k === '.') { state.speed = Math.min(2, +(state.speed + 0.1).toFixed(2)); renderToolbar(); }
+  else if (k === ',') setSpeed(-1);
+  else if (k === '.') setSpeed(1);
 });
 
 // editor events
