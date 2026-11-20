@@ -98,6 +98,15 @@ a.chip.src:hover{text-decoration:underline}
 .pstat.ok{color:var(--mid)} .pstat.warn{color:var(--fast)}
 .prepopen{width:100%}
 .dot.half{background:var(--chord)}
+.gigs{grid-template-columns:repeat(auto-fit,minmax(88px,1fr))}
+.flow button.brk{margin-left:10px;position:relative}
+.flow button.brk::before{content:"";position:absolute;left:-7px;top:6px;bottom:0;border-left:2px dashed var(--line)}
+.sethead{font-family:var(--font-display);font-weight:600;font-size:.88rem;color:var(--accent);padding:8px 2px 2px;border-top:1px dashed var(--line);margin-top:4px}
+.sethead:first-child{border-top:0;margin-top:0;padding-top:0}
+.unk{font-size:.7rem;color:var(--muted)}
+.fresh{font-size:.68rem;font-weight:600;padding:0 6px;border-radius:99px;border:1px dashed var(--muted);color:var(--muted);line-height:1.5}
+.pill.none{color:var(--muted)}
+.prepset{margin:6px 0 -4px;font-family:var(--font-display);color:var(--accent)}
 .sync{display:flex;align-items:center;gap:6px;flex-wrap:wrap;color:var(--fg)}
 .sdot{width:9px;height:9px;border-radius:50%;background:var(--line);flex:none}
 .sdot.ok{background:var(--mid)} .sdot.busy{background:var(--chord)} .sdot.err{background:var(--fast)}
@@ -823,11 +832,47 @@ const GIGS = [
     {n:'สักวันฉันจะดีพอ', a:'Bodyslam', bpm:126, sing:['มอส']},
     {n:'วัดใจ', a:'Silly Fools', bpm:160, sing:['คิง','มอส'], note:'คิงหลัก · มอสเสริม'}
   ]},
-  {id:'g0611', date:'6/11', title:'ITD Outing', place:'ชะอำ', mins:null, songs:[]}
+  {id:'g0611', date:'6/11', title:'ITD Outing', place:'ชะอำ', mins:null, songs:[]},
+  {id:'gqad', date:'QAD', title:'งาน QAD', place:'', mins:135, sets:[{name:'รอบ 1', time:'18:15–19:00', mins:45, n:9}, {name:'รอบ 2', mins:90, n:25}], songs:[
+    {n:'คุกเข่า', a:'Cocktail', bpm:128, sing:['มอส']},
+    {n:'9 นาฬิกา', a:'SPF', bpm:110, sing:['มอส']},
+    {n:'ฝากที', a:'Tattoo Colour', bpm:118, sing:['คิง']},
+    {n:'โปรดส่งใครมารักฉันที', a:'Instinct', bpm:104, sing:['มอส']},
+    {n:'รักเธอหัวทิ่มบ่อ', a:'Hangman', bpm:100, sing:['คิง']},
+    {n:'แพ้ทาง', a:'Labanoon', bpm:97, sing:[], fresh:true},
+    {n:'ซมซาน', a:'Loso', bpm:114, sing:[], fresh:true},
+    {n:'นิดหน่อย', a:'Joey Phuwasit', bpm:102, sing:[], fresh:true},
+    {n:'สักวันฉันจะดีพอ', a:'Bodyslam', bpm:126, sing:['มอส']},
+    {n:'ก่อนตาย', a:'Big Ass', bpm:172, sing:['คิง']},
+    {n:'191', a:'Labanoon', bpm:136, sing:[], fresh:true},
+    {n:'ยาม', a:'Labanoon', bpm:131, sing:[], fresh:true},
+    {n:'รักสนุก', a:'Flame', bpm:100, sing:[], fresh:true},
+    {n:'กล้าพอไหม', a:'Potato', bpm:78, sing:['คิง']},
+    {n:'ดีแต่ปาก', a:'Big Ass', bpm:102, sing:['คิง']},
+    {n:'เล่นของสูง', a:'Big Ass', bpm:96, sing:['คิง']},
+    {n:'รักไม่ช่วยอะไร', a:'Zamzenlazer (cover)', bpm:182, sing:['คิง']},
+    {n:'ไม่สมศักดิ์ศรี', a:'ไท ธนาวุฒิ', bpm:162, sing:[], fresh:true, half:true},
+    {n:'สัญญาเดือนหก', a:'Joey Phuwasit', bpm:102, sing:[], fresh:true},
+    {n:'กระเป๋าแบนแฟนยิ้ม', a:'The Richman Toy', bpm:150, sing:['มอส']},
+    {n:'จั๊กกิ้มกับตั๊กโต', a:'วงตั๊กโต อาร์ สยาม', bpm:160, sing:['คิง']},
+    {n:'อ๊อดๆ', a:'The Richman Toy', bpm:130, sing:['มอส']},
+    {n:'โคโยตี้', a:'TaitosmitH', bpm:150, sing:['มอส']},
+    {n:'เจ็บจุงเบย', a:'คาวบอย', bpm:157, sing:['คิง']},
+    {n:'ยินดีที่ไม่รู้จัก', a:'25hours', bpm:135, sing:['มอส']},
+    {n:'จิ๊จ๊ะ', a:'Silly Fools', bpm:128, sing:['คิง']},
+    {n:'กลัวว่าฉันจะไม่เสียใจ', a:'Purpeech', bpm:134, sing:['มอส']},
+    {n:'ขี้หึง', a:'Silly Fools', bpm:116, sing:['คิง']},
+    {n:'ห้ามใจ', a:'Bodyslam', bpm:178, sing:['คิง'], note:'คิงหลัก', half:true},
+    {n:'คิดฮอด', a:'Bodyslam', bpm:108, sing:[]},
+    {n:'ยาพิษ', a:'Bodyslam', bpm:175, sing:['คิง','มอส'], note:'คิงหลัก · มอสเสริม'},
+    {n:'วัดใจ', a:'Silly Fools', bpm:160, sing:['คิง']},
+    {n:'รสชาติชีวิต', a:'Little John', bpm:135, sing:['มอส']},
+    {n:'จันทร์เจ้า', a:'Slot Machine', bpm:111, sing:['มอส']}
+  ]}
 ];
 // Chord-only charts (no lyrics) taken from dochord.com: one row = one sung line. Open src for lyrics.
 const CHARTS = {
-'g0411-1': {src:'https://www.dochord.com/39434/', text:`{key: D}
+'คุกเข่า': {src:'https://www.dochord.com/39434/', text:`{key: D}
 
 # ท่อนร้อง
 [D] [G] [D/F#] [G]
@@ -905,7 +950,7 @@ const CHARTS = {
 
 # จบ
 [G]`},
-'g0411-2': {src:'https://www.dochord.com/31718/', text:`{key: E}
+'ขี้หึง': {src:'https://www.dochord.com/31718/', text:`{key: E}
 
 # Intro
 [E] [E] [A] [B]
@@ -980,7 +1025,7 @@ const CHARTS = {
 
 # จบ
 [E]`},
-'g0411-3': {src:'https://www.dochord.com/366409/', text:`{key: G}
+'ฝากที': {src:'https://www.dochord.com/366409/', text:`{key: G}
 
 # Intro
 [Gmaj7]
@@ -1059,7 +1104,7 @@ const CHARTS = {
 [Em7] [Am7]
 [D7]
 [Gmaj7]`},
-'g0411-4': {src:'https://www.dochord.com/376479/', text:`{key: G}
+'รักเธอหัวทิ่มบ่อ': {src:'https://www.dochord.com/376479/', text:`{key: G}
 
 # Intro
 [G] [G] [C] [D]
@@ -1118,7 +1163,7 @@ const CHARTS = {
 [G]
 [C]
 [D] [G]`},
-'g0411-5': {src:'https://www.dochord.com/46354/', text:`{key: C}
+'เธอยัง': {src:'https://www.dochord.com/46354/', text:`{key: C}
 
 # ท่อนร้อง
 [Cmaj7]
@@ -1188,7 +1233,7 @@ const CHARTS = {
 [Em]
 [Dm] [G]
 [C]`},
-'g0411-6': {src:'https://www.dochord.com/39782/', text:`{key: C}
+'เล่นของสูง': {src:'https://www.dochord.com/39782/', text:`{key: C}
 
 # ท่อนร้อง
 [C]
@@ -1248,7 +1293,7 @@ const CHARTS = {
 
 # จบ
 [Dm] [F] [G] [C]`},
-'g0411-7': {src:'https://www.dochord.com/7302/', text:`{key: G}
+'สักวันฉันจะดีพอ': {src:'https://www.dochord.com/7302/', text:`{key: G}
 
 # Intro
 [G]
@@ -1311,7 +1356,7 @@ const CHARTS = {
 [G] [Em] [C]
 [D]
 [C] [Bm] [G]`},
-'g0411-8': {src:'https://www.dochord.com/31729/', text:`{key: E}
+'วัดใจ': {src:'https://www.dochord.com/31729/', text:`{key: E}
 
 # Intro
 [E] [B/D#] [C#m] [A] [B]
@@ -1380,21 +1425,44 @@ const CHARTS = {
 # จบ
 [E]`}
 };
-GIGS.forEach(g => g.songs.forEach((s, i) => { s.id = `${g.id}-${i + 1}`; if (CHARTS[s.id]) { s.chart = CHARTS[s.id].text; s.src = CHARTS[s.id].src; } }));
+// s.id = slot in a gig (for navigation); s.sk = the song itself, so lyrics/key saved once follow it into every gig
+const skOf = n => 's:' + n.replace(/\s+/g, '');
+GIGS.forEach(g => g.songs.forEach((s, i) => { s.id = `${g.id}-${i + 1}`; s.sk = skOf(s.n); const c = CHARTS[s.n]; if (c) { s.chart = c.text; s.src = c.src; } }));
+// where a slot sits when the gig is split into rounds with breaks
+function setPos(g, idx) {
+  if (!g.sets) return null;
+  let from = 0;
+  for (let k = 0; k < g.sets.length; k++) { const st = g.sets[k]; if (idx < from + st.n) return {k, st, from, i: idx - from}; from += st.n; }
+  return null;
+}
+const slotNo = (g, idx) => { const p = setPos(g, idx); return p ? p.i + 1 : idx + 1; };
+const chordSearch = s => 'https://www.google.com/search?q=' + encodeURIComponent(`คอร์ด ${s.n} ${s.a} dochord`);
 const SING = {'คิง':'var(--sing-a)', 'มอส':'var(--sing-b)'};
 const singChip = n => `<span class="sing" style="--s:${SING[n] || 'var(--muted)'}">${esc(n)}</span>`;
+const singChips = s => (s.sing.length ? s.sing.map(singChip).join('') : '<span class="unk">ยังไม่ระบุคนร้อง</span>') + (s.fresh ? '<span class="fresh">ใหม่</span>' : '');
 const tempoVar = b => !b ? 'var(--line)' : b <= 100 ? 'var(--slow)' : b < 140 ? 'var(--mid)' : 'var(--fast)';
 
 let userSongs = store.get('cp.user', []);
+function entryOf(id) { for (const g of GIGS) { const s = g.songs.find(x => x.id === id); if (s) return s; } return null; }
+const tkey = id => 'cp.text.' + ((entryOf(id) || {}).sk || id);
+const spkey = id => 'cp.sp.' + ((entryOf(id) || {}).sk || id);
+// older saves were keyed by gig slot (cp.text.g0411-3); move them to the song key
+function migrateKeys() {
+  GIGS.forEach(g => g.songs.forEach(s => ['text', 'sp'].forEach(kind => {
+    const old = `cp.${kind}.${s.id}`, nw = `cp.${kind}.${s.sk}`, v = store.get(old, null);
+    if (v != null) { if (store.get(nw, null) == null) store.set(nw, v); store.del(old); }
+  })));
+}
+migrateKeys();
 function findSong(id) {
-  for (const g of GIGS) { const i = g.songs.findIndex(s => s.id === id); if (i >= 0) return {id, kind:'set', entry:g.songs[i], gig:g, idx:i, text: store.get('cp.text.' + id, g.songs[i].chart || '')}; }
-  const x = SAMPLES.find(s => s.id === id); if (x) return {id, kind:'sample', text: store.get('cp.text.' + id, x.text)};
+  for (const g of GIGS) { const i = g.songs.findIndex(s => s.id === id); if (i >= 0) return {id, kind:'set', entry:g.songs[i], gig:g, idx:i, text: store.get(tkey(id), g.songs[i].chart || '')}; }
+  const x = SAMPLES.find(s => s.id === id); if (x) return {id, kind:'sample', text: store.get(tkey(id), x.text)};
   const u = userSongs.find(s => s.id === id); if (u) return {id, kind:'user', text: u.text};
   return null;
 }
 
 function hasLyrics(id) {
-  const t = store.get('cp.text.' + id, null);
+  const t = store.get(tkey(id), null);
   return !!t && t.split('\n').some(l => !/^\s*[#{]/.test(l) && HAS_THAI.test(l.replace(/\[[^\]]*\]/g, '')));
 }
 // pasted page text → stored chart; keeps the bundled chart's key when the paste has none
@@ -1408,11 +1476,12 @@ function preparePaste(id, raw, keyOverride) {
 
 /* ================= state ================= */
 const G = store.get('cp.prefs', {});
-const state = {inst: G.inst || 'guitar', nash: !!G.nash, simp: !!G.simp, size: G.size || 1, cols: !!G.cols, speed: G.speed || 1, tab: G.tab || 'set', gig: G.gig || GIGS[0].id, t: 0, capo: 0};
-let songId = G.last && findSong(G.last) ? G.last : GIGS[0].songs[0].id;
+const GIGV = 3, newGig = G.gigv !== GIGV;
+const state = {inst: G.inst || 'guitar', nash: !!G.nash, simp: !!G.simp, size: G.size || 1, cols: !!G.cols, speed: G.speed || 1, tab: newGig ? 'set' : (G.tab || 'set'), gig: newGig ? 'gqad' : (G.gig || GIGS[0].id), t: 0, capo: 0};
+let songId = newGig ? 'gqad-1' : (G.last && findSong(G.last) ? G.last : GIGS[0].songs[0].id);
 let cur = null;
-const savePrefs = () => store.set('cp.prefs', {inst: state.inst, nash: state.nash, simp: state.simp, size: state.size, cols: state.cols, speed: state.speed, tab: state.tab, gig: state.gig, last: songId});
-const saveSongPrefs = () => store.set('cp.sp.' + songId, {t: state.t, capo: state.capo});
+const savePrefs = () => store.set('cp.prefs', {inst: state.inst, nash: state.nash, simp: state.simp, size: state.size, cols: state.cols, speed: state.speed, tab: state.tab, gig: state.gig, last: songId, gigv: GIGV});
+const saveSongPrefs = () => store.set(spkey(songId), {t: state.t, capo: state.capo});
 const norm = t => ((t + 6) % 12 + 12) % 12 - 6;
 
 function loadSong(id, keepScroll) {
@@ -1425,7 +1494,7 @@ function loadSong(id, keepScroll) {
   cur = {song: s, parsed: p, title: p.meta.title || e.n || 'ไม่มีชื่อเพลง', artist: p.meta.artist || e.a || '',
          bpm: p.meta.tempo || e.bpm || null, dur: p.meta.duration || 240, key, autoKey: auto,
          beats: p.meta.time && /^3\//.test(p.meta.time) ? 3 : p.meta.time && /^6\//.test(p.meta.time) ? 6 : 4};
-  const sp = store.get('cp.sp.' + songId, {t: 0, capo: 0}); state.t = sp.t || 0; state.capo = sp.capo || 0;
+  const sp = store.get(spkey(songId), {t: 0, capo: 0}); state.t = sp.t || 0; state.capo = sp.capo || 0;
   if (s.gig) state.gig = s.gig.id;
   savePrefs(); renderAll();
   if (!keepScroll) window.scrollTo(0, 0);
@@ -1457,21 +1526,21 @@ function renderRail() {
   const avg = g.songs.length ? Math.round(g.songs.reduce((a, s) => a + (s.bpm || 0), 0) / g.songs.length) : 0;
   let h = `<div style="display:flex;flex-direction:column;gap:12px">
     <div class="gigs">${GIGS.map(x => `<button class="gig" data-gig="${x.id}" aria-pressed="${x.id === g.id}"><b>${esc(x.date)}</b><span>${esc(x.title)}</span></button>`).join('')}</div>
-    <div class="gighead"><h2>${esc(g.title)} @${esc(g.place)}</h2><p>${esc(g.date)} · ${g.mins ? g.mins + ' นาที · ' : ''}${g.songs.length} เพลง${avg ? ' · BPM เฉลี่ย ' + avg : ''}</p></div>`;
+    <div class="gighead"><h2>${esc(g.title)}${g.place ? ' @' + esc(g.place) : ''}</h2><p>${g.sets ? g.sets.map(st => `${esc(st.name)} ${st.n} เพลง${st.time ? ' (' + esc(st.time) + ')' : ''}`).join(' · ') : `${esc(g.date)} · ${g.mins ? g.mins + ' นาที · ' : ''}${g.songs.length} เพลง`}${avg ? ' · BPM เฉลี่ย ' + avg : ''}</p></div>`;
   if (g.songs.length) {
-    h += `<div class="flow" aria-label="ลำดับความเร็วเพลง">${g.songs.map((s, i) => `<button data-song="${s.id}" class="${s.id === songId ? 'cur' : ''}" title="${esc(s.n)} · ${s.bpm} BPM"><small>${s.bpm}</small><i style="--c:${tempoVar(s.bpm)};height:${Math.round((s.bpm / mx) * 40)}px"></i><small>${i + 1}</small></button>`).join('')}</div>
+    h += `<div class="flow" aria-label="ลำดับความเร็วเพลง">${g.songs.map((s, i) => { const ps = setPos(g, i); return `<button data-song="${s.id}" class="${s.id === songId ? 'cur' : ''}${ps && ps.i === 0 && i ? ' brk' : ''}" title="${ps ? esc(ps.st.name) + ' · ' : ''}${esc(s.n)} · ${s.bpm} BPM"><small>${g.songs.length > 12 ? '' : s.bpm}</small><i style="--c:${tempoVar(s.bpm)};height:${Math.round((s.bpm / mx) * 40)}px"></i><small>${slotNo(g, i)}</small></button>`; }).join('')}</div>
       <div class="legend"><span style="--c:var(--slow)">ช้า ≤100</span><span style="--c:var(--mid)">กลาง 101–139</span><span style="--c:var(--fast)">เร็ว ≥140</span></div>
       <button class="tb primary prepopen" id="prep-open">เตรียมเนื้อร้องทั้งเซ็ต · ใส่แล้ว ${g.songs.filter(s => hasLyrics(s.id)).length}/${g.songs.length}</button>
-      <ul class="list">${g.songs.map((s, i) => { const ly = hasLyrics(s.id), has = ly || !!store.get('cp.text.' + s.id, s.chart || ''); return `<li><button class="row ${s.id === songId ? 'cur' : ''}" data-song="${s.id}" style="--c:${tempoVar(s.bpm)}">
-        <span class="n">${i + 1}</span>
-        <span style="min-width:0"><span class="t">${esc(s.n)}</span><span class="a">${esc(s.a)} ${s.sing.map(singChip).join('')} <span class="dot ${ly ? 'ok' : has ? 'half' : ''}" title="${ly ? 'มีเนื้อร้องแล้ว' : has ? 'มีแต่คอร์ด' : 'ยังไม่มีคอร์ด'}"></span></span></span>
-        <span class="bpm">${s.bpm}<small>BPM</small></span></button></li>`; }).join('')}</ul>
+      <ul class="list">${g.songs.map((s, i) => { const ly = hasLyrics(s.id), has = ly || !!store.get(tkey(s.id), s.chart || ''), ps = setPos(g, i); return `${ps && ps.i === 0 ? `<li class="sethead">${ps.k ? '☕ พักเบรก · ' : ''}${esc(ps.st.name)}${ps.st.time ? ' · ' + esc(ps.st.time) : ''} · ${ps.st.n} เพลง${ps.st.mins ? ' · ' + ps.st.mins + ' นาที' : ''}</li>` : ''}<li><button class="row ${s.id === songId ? 'cur' : ''}" data-song="${s.id}" style="--c:${tempoVar(s.bpm)}">
+        <span class="n">${slotNo(g, i)}</span>
+        <span style="min-width:0"><span class="t">${esc(s.n)}</span><span class="a">${esc(s.a)} ${singChips(s)} <span class="dot ${ly ? 'ok' : has ? 'half' : ''}" title="${ly ? 'มีเนื้อร้องแล้ว' : has ? 'มีแต่คอร์ด' : 'ยังไม่มีคอร์ด'}"></span></span></span>
+        <span class="bpm">${s.bpm}<small>BPM${s.half ? ' · ½ = ' + s.bpm / 2 : ''}</small></span></button></li>`; }).join('')}</ul>
       <div class="legend" style="gap:12px">${Object.entries(count).map(([n, c]) => `<span style="--c:${SING[n] || 'var(--muted)'}">${esc(n)}ร้อง ${c} เพลง</span>`).join('')}<span style="--c:var(--mid)">มีเนื้อร้องแล้ว</span><span style="--c:var(--chord)">มีแต่คอร์ด</span></div>`;
   } else h += `<div class="empty-note">ยังไม่มีรายชื่อเพลงของงานนี้ ส่งลิสต์มาให้ Claude เพิ่มให้ได้เลย</div>`;
   $('#pane-set').innerHTML = h + '</div>';
 
   const q = $('#q').value.trim().toLowerCase();
-  const all = [...SAMPLES.map(s => ({id: s.id, text: store.get('cp.text.' + s.id, s.text), tag: 'ตัวอย่าง'})), ...userSongs.map(s => ({id: s.id, text: s.text, tag: ''}))];
+  const all = [...SAMPLES.map(s => ({id: s.id, text: store.get(tkey(s.id), s.text), tag: 'ตัวอย่าง'})), ...userSongs.map(s => ({id: s.id, text: s.text, tag: ''}))];
   $('#list').innerHTML = all.map(s => { const m = parseSong(s.text).meta; return {s, m}; })
     .filter(({m}) => !q || (m.title || '').toLowerCase().includes(q) || (m.artist || '').toLowerCase().includes(q))
     .map(({s, m}) => `<li><button class="row ${s.id === songId ? 'cur' : ''}" data-song="${s.id}" style="grid-template-columns:minmax(0,1fr) auto;--c:${tempoVar(m.tempo)}">
@@ -1481,13 +1550,16 @@ function renderRail() {
 
 function renderHead() {
   const s = cur.song;
-  $('#s-eyebrow').textContent = s.kind === 'set' ? `เพลงที่ ${s.idx + 1} จาก ${s.gig.songs.length} · ${s.gig.title}` : (s.kind === 'sample' ? 'เพลงตัวอย่าง' : 'เพลงของฉัน');
+  const ps = s.kind === 'set' ? setPos(s.gig, s.idx) : null;
+  $('#s-eyebrow').textContent = ps ? `${ps.st.name} · เพลงที่ ${ps.i + 1} จาก ${ps.st.n} · ${s.gig.title}` : s.kind === 'set' ? `เพลงที่ ${s.idx + 1} จาก ${s.gig.songs.length} · ${s.gig.title}` : (s.kind === 'sample' ? 'เพลงตัวอย่าง' : 'เพลงของฉัน');
   $('#s-title').textContent = cur.title;
   let c = '';
   if (cur.artist) c += `<span class="chip">${esc(cur.artist)}</span>`;
-  if (s.entry) c += s.entry.sing.map(singChip).join('') + (s.entry.note ? `<span class="chip">${esc(s.entry.note)}</span>` : '');
+  if (s.entry) c += singChips(s.entry) + (s.entry.note ? `<span class="chip">${esc(s.entry.note)}</span>` : '');
   if (cur.key) c += `<span class="chip k">คีย์ต้นฉบับ ${keyName(cur.key.pc, cur.key.minor)}</span>` + (cur.autoKey ? `<span class="chip auto">ตรวจคีย์อัตโนมัติ</span>` : '');
   if (cur.bpm) c += `<span class="chip tempo" style="--c:${tempoVar(cur.bpm)}">${cur.bpm} BPM${cur.beats !== 4 ? ' · ' + cur.beats + '/4' : ''}</span>`;
+  if (cur.bpm && s.entry && s.entry.half) c += `<span class="chip">นับครึ่ง ½ = ${cur.bpm / 2}</span>`;
+  if (s.entry && !s.entry.src && !cur.parsed.chords.length) c += `<a class="chip src" href="${chordSearch(s.entry)}" target="_blank" rel="noopener">หาคอร์ดเพลงนี้ ↗</a>`;
   if (s.entry && s.entry.src) c += `<a class="chip src" href="${esc(s.entry.src)}" target="_blank" rel="noopener">เนื้อร้อง + คอร์ดเต็ม ที่ dochord ↗</a>`;
   $('#s-chips').innerHTML = c;
   $('#edit').textContent = cur.parsed.chords.length || s.kind !== 'set' ? 'แก้ไขคอร์ด' : 'ใส่คอร์ด';
@@ -1575,9 +1647,10 @@ function renderNext() {
   const s = cur.song; const nx = $('#nextup');
   if (s.kind !== 'set') { nx.innerHTML = ''; $('#sb-info').textContent = cur.title; $('#sb-prev').disabled = $('#sb-next').disabled = true; return; }
   const p = s.gig.songs[s.idx - 1], n = s.gig.songs[s.idx + 1];
-  const card = (x, i, cls, lbl) => x ? `<button class="nav ${cls}" data-song="${x.id}"><small>${lbl}</small><b>${i}. ${esc(x.n)}</b><span>${esc(x.a)} · ${x.bpm} BPM · ${x.sing.join(' + ')}</span></button>` : `<button class="nav ${cls}" disabled><small>${lbl}</small><b>${cls === 'next' ? 'จบเซ็ต' : 'เพลงแรก'}</b><span>&nbsp;</span></button>`;
-  nx.innerHTML = card(p, s.idx, 'prev', '◀ ก่อนหน้า') + card(n, s.idx + 2, 'next', 'เพลงถัดไป ▶');
-  $('#sb-info').innerHTML = `<b>${s.idx + 1}/${s.gig.songs.length}</b> ${esc(cur.title)}${n ? ` · ถัดไป: ${esc(n.n)} (${n.bpm})` : ' · เพลงสุดท้าย'}`;
+  const g = s.gig, here = setPos(g, s.idx), there = n ? setPos(g, s.idx + 1) : null, brk = here && there && there.k !== here.k;
+  const card = (x, idx, cls, lbl) => x ? `<button class="nav ${cls}" data-song="${x.id}"><small>${lbl}</small><b>${slotNo(g, idx)}. ${esc(x.n)}</b><span>${esc(x.a)} · ${x.bpm} BPM · ${x.sing.join(' + ') || 'ยังไม่ระบุคนร้อง'}</span></button>` : `<button class="nav ${cls}" disabled><small>${lbl}</small><b>${cls === 'next' ? 'จบเซ็ต' : 'เพลงแรก'}</b><span>&nbsp;</span></button>`;
+  nx.innerHTML = card(p, s.idx - 1, 'prev', '◀ ก่อนหน้า') + card(n, s.idx + 1, 'next', brk ? `☕ พักเบรก แล้วเริ่ม${there.st.name} ▶` : 'เพลงถัดไป ▶');
+  $('#sb-info').innerHTML = `<b>${here ? esc(here.st.name) + ' ' + (here.i + 1) + '/' + here.st.n : (s.idx + 1) + '/' + g.songs.length}</b> ${esc(cur.title)}${n ? ` · ${brk ? 'หลังเบรก' : 'ถัดไป'}: ${esc(n.n)} (${n.bpm})` : ' · เพลงสุดท้าย'}`;
   $('#sb-prev').disabled = !p; $('#sb-next').disabled = !n;
 }
 function go(dir) { const s = cur.song; if (s.kind !== 'set') return; const x = s.gig.songs[s.idx + dir]; if (x) { const m = metro.on; loadSong(x.id); if (m) setMetro(true); } }
@@ -1639,7 +1712,7 @@ function openEditor(id) {
   edId = id; const s = id ? findSong(id) : null;
   $('#ed-h').textContent = !s ? 'เพิ่มเพลงใหม่' : s.kind === 'set' ? `คอร์ด: ${s.entry.n}` : `แก้ไข: ${parseSong(s.text).meta.title || ''}`;
   $('#ed-text').value = s ? s.text : `{title: }\n{artist: }\n{key: }\n{tempo: }\n\n# Intro\n\n# Verse\n`;
-  $('#ed-del').hidden = !(s && (s.kind === 'user' || (s.kind !== 'user' && store.get('cp.text.' + s.id, null) != null)));
+  $('#ed-del').hidden = !(s && (s.kind === 'user' || (s.kind !== 'user' && store.get(tkey(s.id), null) != null)));
   $('#ed-del').textContent = s && s.kind === 'user' ? 'ลบเพลงนี้' : 'กลับไปใช้คอร์ดตั้งต้น'; $('#ed-del').dataset.armed = '';
   $('#editor').hidden = false; edPreview(); $('#ed-text').focus();
 }
@@ -1651,9 +1724,9 @@ function saveEditor() {
   let text = $('#ed-text').value;
   if (looksChordsOver(text)) { const r = convertText(text); text = r.text; }
   const s = edId ? findSong(edId) : null;
-  if (s && s.kind === 'set') store.set('cp.text.' + s.id, text);
+  if (s && s.kind === 'set') store.set(tkey(s.id), text);
   else if (s && s.kind === 'user') { s.text = text; userSongs = userSongs.map(u => u.id === s.id ? {id: s.id, text} : u); store.set('cp.user', userSongs); }
-  else if (s && s.kind === 'sample') store.set('cp.text.' + s.id, text);
+  else if (s && s.kind === 'sample') store.set(tkey(s.id), text);
   else { const id = 'u' + Date.now(); userSongs.push({id, text}); store.set('cp.user', userSongs); edId = id; }
   $('#editor').hidden = true; toast('บันทึกแล้ว'); loadSong(edId || songId, true);
 }
@@ -1709,7 +1782,7 @@ document.addEventListener('click', e => {
   if (!e.target.closest('#pop')) pop.hidden = true;
   if (e.target.id === 'paste-save') {
     const t = preparePaste(songId, $('#paste').value, $('#paste-key').value); if (!t) { toast('วางเนื้อร้องกับคอร์ดในช่องก่อน แล้วค่อยกดบันทึก'); return; }
-    store.set('cp.text.' + songId, t); loadSong(songId);
+    store.set(tkey(songId), t); loadSong(songId);
     const c = cur.parsed.chords.length;
     toast(c ? `บันทึกแล้ว พบคอร์ด ${c} ตำแหน่ง${cur.key ? ' · คีย์ ' + keyName(cur.key.pc, cur.key.minor) : ''}` : 'บันทึกแล้ว แต่ยังหาคอร์ดไม่เจอ ลองกดแก้ไขคอร์ด');
   }
@@ -1741,7 +1814,7 @@ $('#ed-del').onclick = e => {
   const b = e.currentTarget; if (!b.dataset.armed) { b.dataset.armed = '1'; b.textContent = 'กดอีกครั้งเพื่อยืนยัน'; return; }
   const s = findSong(edId);
   if (s.kind === 'user') { userSongs = userSongs.filter(u => u.id !== s.id); store.set('cp.user', userSongs); $('#editor').hidden = true; loadSong(GIGS[0].songs[0].id); }
-  else { store.del('cp.text.' + s.id); $('#editor').hidden = true; loadSong(s.id); }
+  else { store.del(tkey(s.id)); $('#editor').hidden = true; loadSong(s.id); }
   toast('ลบแล้ว');
 };
 
@@ -1749,10 +1822,10 @@ $('#ed-del').onclick = e => {
 function openPrep() {
   const g = GIGS.find(x => x.id === state.gig) || GIGS[0];
   $('#prep-h').textContent = `เตรียมเนื้อร้องทั้งเซ็ต · ${g.title}`;
-  $('#prep-list').innerHTML = g.songs.map((s, i) => { const ly = hasLyrics(s.id); return `<div class="prepitem" style="--c:${tempoVar(s.bpm)}">
-    <div class="top"><span class="n">${i + 1}</span><b>${esc(s.n)}</b><span style="color:var(--muted);font-size:.85rem">${esc(s.a)}</span>
-      <span class="pill ${ly ? 'ok' : 'half'}">${ly ? 'มีเนื้อร้องแล้ว' : 'มีแต่คอร์ด'}</span>
-      ${s.src ? `<a class="tb" href="${esc(s.src)}" target="_blank" rel="noopener">เปิดหน้า dochord ↗</a>` : ''}</div>
+  $('#prep-list').innerHTML = g.songs.map((s, i) => { const ly = hasLyrics(s.id), ch = ly || !!store.get(tkey(s.id), s.chart || ''), ps = setPos(g, i); return `${ps && ps.i === 0 ? `<h4 class="prepset">${esc(ps.st.name)}</h4>` : ''}<div class="prepitem" style="--c:${tempoVar(s.bpm)}">
+    <div class="top"><span class="n">${slotNo(g, i)}</span><b>${esc(s.n)}</b><span style="color:var(--muted);font-size:.85rem">${esc(s.a)}</span>
+      <span class="pill ${ly ? 'ok' : ch ? 'half' : 'none'}">${ly ? 'มีเนื้อร้องแล้ว' : ch ? 'มีแต่คอร์ด' : 'ยังไม่มีคอร์ด'}</span>
+      <a class="tb" href="${esc(s.src || chordSearch(s))}" target="_blank" rel="noopener">${s.src ? 'เปิดหน้า dochord ↗' : 'หาคอร์ด ↗'}</a></div>
     <textarea data-prep="${s.id}" spellcheck="false" aria-label="วางเนื้อร้องและคอร์ดเพลง ${esc(s.n)}" placeholder="${ly ? 'วางใหม่ถ้าต้องการแทนที่ของเดิม' : 'วางเนื้อร้อง + คอร์ดของเพลงนี้ตรงนี้'}"></textarea>
     <small class="pstat" id="pst-${s.id}"></small></div>`; }).join('');
   $('#prep').hidden = false;
@@ -1768,7 +1841,7 @@ $('#prep-list').addEventListener('input', e => {
 $('#prep-close').onclick = () => $('#prep').hidden = true;
 $('#prep-save').onclick = () => {
   let n = 0;
-  document.querySelectorAll('#prep-list textarea[data-prep]').forEach(ta => { const t = preparePaste(ta.dataset.prep, ta.value); if (t) { store.set('cp.text.' + ta.dataset.prep, t); n++; } });
+  document.querySelectorAll('#prep-list textarea[data-prep]').forEach(ta => { const t = preparePaste(ta.dataset.prep, ta.value); if (t) { store.set(tkey(ta.dataset.prep), t); n++; } });
   if (!n) { toast('ยังไม่ได้วางเพลงไหนเลย'); return; }
   $('#prep').hidden = true; loadSong(songId, true); toast(`บันทึกเนื้อร้องแล้ว ${n} เพลง อย่าลืมกดคัดลอกข้อมูลสำรองเก็บไว้`);
 };
@@ -1824,7 +1897,7 @@ async function syncNow() {
       if (!m[k] || it.t > m[k]) { applyRaw(k, it.v); m[k] = it.t; pulled++; }
     }
     store.set('cp.ts', m);
-    if (pulled) { userSongs = store.get('cp.user', []); loadSong(findSong(songId) ? songId : GIGS[0].songs[0].id, true); }
+    if (pulled) { migrateKeys(); userSongs = store.get('cp.user', []); loadSong(findSong(songId) ? songId : GIGS[0].songs[0].id, true); }
     SY.last = new Date(); SY.err = null;
   } catch (e) { SY.err = e && e.message && !/fetch|network|load/i.test(e.message) ? e.message : 'เชื่อมต่อไม่ได้ (ตรวจอินเทอร์เน็ต)'; }
   SY.busy = false; setSyncUI();
