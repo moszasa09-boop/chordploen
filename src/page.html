@@ -2082,7 +2082,8 @@ $('#io-close').onclick = () => $('#io').hidden = true;
 $('#io-go').onclick = () => {
   try { const j = JSON.parse($('#io-text').value); if (j.app !== 'chordploen' || !j.data) throw 0;
     Object.entries(j.data).forEach(([k, v]) => k.startsWith('cp.') && !['cp.sync', 'cp.ts', 'cp.auth'].includes(k) && store.set(k, v));
-    userSongs = store.get('cp.user', []); $('#io').hidden = true; loadSong(songId); toast('กู้คืนข้อมูลแล้ว');
+    migrateKeys(); userSongs = store.get('cp.user', []); $('#io').hidden = true; loadSong(songId);
+    toast(`กู้คืนข้อมูลแล้ว · เพลงที่มีเนื้อร้อง ${new Set(GIGS.flatMap(g => g.songs.filter(x => hasLyrics(x.id)).map(x => x.sk))).size} เพลง`);
   } catch (e) { $('#io-msg').textContent = 'ข้อมูลนี้อ่านไม่ได้ ตรวจว่าคัดลอกมาครบตั้งแต่ { จนถึง }'; }
 };
 
