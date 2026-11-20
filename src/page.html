@@ -674,6 +674,7 @@ function parseSong(text) {
       else if (k === 'tempo' || k === 'bpm') meta.tempo = parseFloat(v) || null;
       else if (k === 'duration') meta.duration = parseDur(v);
       else if (k === 'time') meta.time = v;
+      else if (k === 'capo') meta.capo = parseInt(v, 10) || 0;
       else if (['c','comment','ci','section'].includes(k)) items.push({type:'section', label:v});
       else if (k === 'soc' || k === 'start_of_chorus') items.push({type:'section', label:v || 'Chorus'});
       else if (k === 'sov' || k === 'start_of_verse') items.push({type:'section', label:v || 'Verse'});
@@ -1439,6 +1440,117 @@ const CHARTS = {
 # จบ
 [E]`}
 };
+// QAD songs (2026-11-20): chord-only charts from dochord.com, chord order checked against each page.
+Object.assign(CHARTS, {
+"9 นาฬิกา": {
+"src": "https://www.dochord.com/363223/",
+"text": "{key: Db}\n{capo: 1}\n\n# Intro\n[Db] [Dbmaj7] [Db] [Dbmaj7]\n\n# ท่อนร้อง\n[Db] [Dbmaj7] [Bbm]\n[Ab] [Db]\n[Dbmaj7] [Bbm]\n[Ab]\n[Ebm] [Fm] [Gb]\n[Ab] [Ebm]\n[Fm] [Gb] [Ab]\n\n# ท่อนฮุก\n[Db]\n[Bbm]\n[Ab] [Gb]\n[Fm] [Ebm] [Ab]\n[Db]\n[Bbm] [Ab]\n[Gb]\n[Fm] [Ebm]\n[Ab] [Db]\n[Db] [Ab/C] [Bbm]\n[Ab] [Db]\n[Ab/C] [Bbm]\n[Ab]\n[Ebm] [Fm] [Gb]\n[Ab] [Ebm]\n[Fm] [Gb] [Ab]\n\n# ท่อนฮุก\n[Db]\n[Bbm]\n[Ab] [Gb]\n[Fm] [Ebm] [Ab]\n[Db]\n[Bbm] [Ab]\n[Gb]\n[Fm] [Ebm]\n[Ab]\n[Ebm] [Fm] [Gb]\n[Ab] [Ebm]\n[Fm] [B] [Ab]\n\n# Instru\n[Gb] [Ebm] [Bbm] [Ab]\n[Ebm] [Fm] [B] [Ab]\n\n# ท่อนฮุก\n[Db]\n[Bbm] [Abm]\n[Gb]\n[Fm] [Ebm] [Ab]\n[Db]\n[Bbm] [Ab]\n[Gb]\n[Fm] [Ebm]\n[Ab] [Db]"
+},
+"โปรดส่งใครมารักฉันที": {
+"src": "https://www.dochord.com/94381/",
+"text": "{key: G}\n\n# Intro\n[G] [C] [G] [C]\n\n# ท่อนร้อง\n[G] [C]\n[G] [C]\n[G] [D/F#] [Em]\n[Am] [D]\n[G] [C]\n[G] [C]\n[G] [D/F#] [Em]\n[D] [G]\n[Am] [Bm]\n[C] [Em]\n[Am] [Bm]\n[C] [D]\n\n# ท่อนฮุก\n[C]\n[D] [Bm]\n[Em] [Am]\n[Eb] [G]\n[C]\n[D] [Bm]\n[Em] [Am]\n[D] [G]\n\n# Instru\n[G] [C] [G] [C]\n\n# ท่อนร้อง\n[G] [C]\n[G] [C]\n[G] [D/F#] [Em]\n[D] [G]\n\n# Instru\n[G] [G] [C] [C]\n[C] [C] [C] [C]\n\n# ท่อนร้อง\n[Am] [Bm]\n[C] [Em]\n[Am] [Bm]\n[C] [D]\n\n# ท่อนฮุก\n[C]\n[D] [Bm]\n[Em] [Am]\n[Eb] [G]\n[C]\n[D] [Bm]\n[Em] [Am]\n[D] [G]\n[C] [Bm] [C]\n[D] [Am] [Bm] [C]\n[D]\n\n# จบ\n[G] [G] [G] [G]"
+},
+"แพ้ทาง": {
+"src": "https://www.dochord.com/9923/",
+"text": "{key: A}\n\n# Intro\n[A] [E] [F#m] [D]\n\n# ท่อนร้อง\n[A] [E]\n[F#m] [D]\n[A] [E]\n[F#m] [D]\n[A] [F#m]\n[D] [E]\n\n# ท่อนฮุก\n[A] [E]\n[F#m] [D]\n[A]\n[E]\n[F#m]\n[D]\n\n# Instru\n[A] [E] [F#m] [D]\n\n# ท่อนร้อง\n[A] [E]\n[F#m] [D]\n[A] [E]\n[F#m] [D]\n[A] [F#m]\n[D] [E]\n\n# ท่อนฮุก\n[A] [E]\n[F#m] [D]\n[A]\n[E]\n[F#m]\n[D]\n\n# Instru\n[A] [A]\n\n# ท่อนร้อง\n[A]\n[E]\n[F#m]\n[D]\n[A]\n[E]\n[F#m] [D]\n\n# ท่อนฮุก\n[A] [E]\n[F#m] [D]\n[A]\n[E]\n[F#m]\n[D]\n[A]\n[E]\n[F#m]\n[D]\n[A]\n[E]\n[F#m]\n[D]\n\n# จบ\n[A] [E] [F#m] [D] [A]"
+},
+"ซมซาน": {
+"src": "https://www.dochord.com/15536/",
+"text": "{key: Ab}\n{capo: 1}\n\n# Intro\n[Ab] [Ab] [Fm] [Fm]\n[Db] [Db] [Eb] [Eb]\n\n# ท่อนร้อง\n[Ab] [Fm]\n[Db] [Eb]\n[Ab] [Fm]\n[Db] [Eb]\n[Ab] [Fm]\n[Db] [Eb]\n[Ab] [Fm]\n[Db] [Eb]\n\n# ท่อนฮุก\n[Fm] [Cm]\n[Db] [Eb]\n[Fm] [Cm]\n[Db] [Eb]\n\n# Instru\n[Ab] [Ab] [Fm] [Fm]\n[Db] [Db] [Eb] [Eb]\n\n# ท่อนฮุก\n[Fm] [Cm]\n[Db] [Eb]\n[Fm] [Cm]\n[Db] [Eb]\n\n# ท่อนร้อง\n[Ab] [Fm]\n[Db] [Eb]\n[Ab] [Fm]\n[Db] [Eb]\n\n# ท่อนฮุก\n[Fm] [Cm]\n[Db] [Eb]\n[Fm] [Cm]\n[Db] [Eb]\n\n# จบ\n[Ab] [Ab] [Fm] [Fm]\n[Db] [Db] [Eb] [Eb]\n[Ab]"
+},
+"นิดหน่อย": {
+"src": "https://www.dochord.com/375524/",
+"text": "{key: G}\n\n# Intro\n[G]\n[G] [G] [C] [C]\n[Em] [Em] [C] [C]\n\n# ท่อนร้อง\n[G]\n[C]\n[Em]\n[C]\n[G]\n[C]\n[Em]\n[C]\n[Em]\n[D]\n[C]\n[Em]\n[D/F#] [Am] [D]\n\n# ท่อนฮุก\n[C]\n[G]\n[C]\n[G]\n[Bm]\n[Em] [D]\n[Am] [D]\n[G]\n\n# ท่อนร้อง\n[G]\n[C]\n[Em]\n[C]\n[G]\n[C]\n[Em]\n[C]\n[Em]\n[D]\n[C]\n[Em]\n[D/F#] [Am] [D]\n\n# ท่อนฮุก\n[C]\n[G]\n[C]\n[G]\n[Bm]\n[Em] [D]\n[Am] [D]\n[G]\n\n# Instru\n[C] [C] [Em] [D]\n[C] [C] [D] [D]\n\n# ท่อนฮุก\n[C]\n[G]\n[C]\n[G]\n[Bm]\n[Em] [Dm]\n[G] [Am] [D]\n[G] [E]\n[Am] [D]\n\n# จบ\n[C] [C] [G]"
+},
+"ก่อนตาย": {
+"src": "https://www.dochord.com/39597/",
+"text": "{key: D}\n\n# Intro\n[D] [D]\n\n# ท่อนร้อง\n[D] [G]\n[Em] [A]\n[D] [G]\n[Em] [A]\n[D]\n[D] [G]\n[Em] [A]\n[D] [G]\n[Em] [A]\n[D] [D7]\n\n# ท่อนฮุก\n[G] [F#m]\n[Em] [D]\n[G] [F#m]\n[Em] [A]\n[D]\n\n# ท่อนร้อง\n[D] [G]\n[Em] [A]\n[D] [G]\n[Em] [A]\n[D] [D7]\n\n# ท่อนฮุก\n[G] [F#m]\n[Em] [D]\n[G] [F#m]\n[Em] [A]\n\n# Instru\n[G] [A] [F#m] [Bm]\n[G] [A] [D] [D]\n\n# ท่อนร้อง\n[D]\n[G]\n[D]\n[G] [D7]\n\n# ท่อนฮุก\n[G] [F#m]\n[Em] [D]\n[G] [F#m]\n[Em] [A]\n[D] [D7]\n\n# ท่อนฮุก\n[G] [F#m]\n[Em] [D]\n[G] [F#m]\n[Em] [A]\n[D]\n[D7]\n\n# ท่อนฮุก\n[G] [F#m]\n[Em] [D]\n[G] [F#m]\n[Em] [A]\n[D] [D7]"
+},
+"191": {
+"src": "https://www.dochord.com/29551/",
+"text": "{key: C}\n\n# Intro\n[Am] [Am] [Dm] [Dm]\n[G] [G] [Am] [Am] [G]\n\n# ท่อนร้อง\n[Am] [Dm]\n[Am]\n[Dm]\n[G]\n[Am] [G]\n[Am] [Dm]\n[Am] [Dm]\n[G] [Am]\n[G] [C]\n[Dm] [E]\n\n# ท่อนฮุก\n[C]\n[G]\n[F]\n[E]\n[C]\n[G]\n[F]\n[E]\n\n# ท่อนร้อง\n[Am] [Dm]\n[Am]\n[Dm]\n[G] [Am]\n\n# Instru\n[Am] [Am] [Dm] [Dm]\n[G] [G] [Am] [Am]\n\n# ท่อนร้อง\n[G] [C]\n[Dm] [E]\n\n# ท่อนฮุก\n[C]\n[G]\n[F]\n[E]\n[C]\n[G]\n[F]\n[E]\n\n# ท่อนร้อง\n[Am] [Dm]\n[Am]\n[Dm]\n[G]\n\n# Instru\n[Am]\n[Am] [Am] [Dm] [Dm]\n[G] [G] [Am] [Am]\n[Am] [Am] [Dm] [Dm]\n\n# จบ\n[G]\n[Am]"
+},
+"ยาม": {
+"src": "https://www.dochord.com/30002/",
+"text": "{key: A}\n\n# Intro\n[F#m]\n\n# ท่อนร้อง\n[F#m]\n[Bm]\n[D]\n[E] [F#m]\n[F#m]\n[Bm] [D]\n[E] [F#m] [F#]\n[Bm] [F#m]\n[Bm] [F#m]\n[D]\n[C#7] [F#m] [E]\n\n# ท่อนฮุก\n[A] [E]\n[D] [F#m]\n[A] [E]\n[D] [C#7]\n\n# Instru\n[F#m]\n\n# ท่อนร้อง\n[F#m]\n[Bm] [D]\n[E] [F#m] [F#]\n[Bm] [F#m]\n[Bm] [F#m]\n[D]\n[C#7] [F#m] [E]\n\n# ท่อนฮุก\n[A] [E]\n[D] [F#m]\n[A] [E]\n[D] [C#7]\n[A] [E]\n[D] [F#m]\n[A] [E]\n[D] [C#7]\n\n# ท่อนร้อง\n[F#m]\n\n# Instru\n[D] [D] [F#m] [F#m]\n[D] [D] [F#m] [F#m]\n[F#m] [F#m] [E]\n\n# ท่อนฮุก\n[A] [E]\n[D] [F#m]\n[A] [E]\n[D] [C#7]\n[A] [E]\n[D] [F#m]\n[A] [E]\n[D] [C#7]\n\n# ท่อนจบ\n[F#m]\n[D]\n[E] [F#m]\n[D]\n[E]\n[F#m]"
+},
+"รักสนุก": {
+"src": "https://www.dochord.com/71770/",
+"text": "{key: C}\n\n# Intro\n[Am] [F] [G] [E]\n[F] [G] [Em] [Am] [F] [G] [Em] [E]\n[Am] [Am] [Dm] [Em]\n\n# ท่อนร้อง\n[Am] [Dm]\n[Em]\n[Am] [Dm]\n[Em]\n[Dm]\n[Em] [Am]\n[Dm]\n[F] [E]\n\n# ท่อนฮุก\n[F] [G]\n[Em] [Am]\n[F] [G]\n[Em] [E] [Am]\n\n# Instru\n[Am] [Am] [Dm] [Em]\n\n# ท่อนร้อง\n[Am] [Dm]\n[Em]\n[Am]\n[Dm] [Em]\n[Dm]\n[Em] [Am]\n[Dm]\n[F] [E]\n\n# ท่อนฮุก\n[F] [G]\n[Em] [Am]\n[F] [G]\n[Em] [E]\n\n# Instru\n[Am] [Am] [Dm] [Em]\n[F] [G] [Em] [Am] [F] [G] [Em] [E]\n[F] [G] [Em] [Am]\n\n# ท่อนฮุก\n[F]\n[G]\n[Em]\n[E]\n\n# จบ\n[Am] [F] [G] [E] [Am]"
+},
+"กล้าพอไหม": {
+"src": "https://www.dochord.com/138025/",
+"text": "{key: C}\n\n# Intro\n[C] [Em7] [Dm7] [G]\n\n# ท่อนร้อง\n[C] [Em7]\n[Dm7] [G]\n[C] [Em7]\n[Dm7] [G]\n[F] [Em] [Am]\n[Dm7] [G] [C]\n[F] [Em] [Am]\n[Dm7] [G]\n\n# ท่อนฮุก\n[F] [Fm]\n[Em7] [A7]\n[Dm7] [G] [C]\n[F] [Fm]\n[Em7] [A7]\n[Dm7] [G] [F] [G]\n\n# ท่อนร้อง\n[C] [Em]\n[Dm] [G]\n[C] [Em]\n[Dm] [G]\n[F] [Em] [Am]\n[Dm] [G] [C]\n[F] [Em] [Am]\n[Dm] [G]\n\n# ท่อนฮุก\n[F] [Fm]\n[Em] [A7]\n[Dm] [G] [C]\n[F] [Fm]\n[Em] [A7]\n[Dm] [G]\n\n# Instru\n[F] [G] [C] [C]\n\n# ท่อนฮุก\n[F] [Fm]\n[Em] [A7]\n[Dm] [G] [C]\n[F] [Fm]\n[Em] [A7]\n[Dm] [G]\n\n# จบ\n[C] [Em7] [Dm7] [G] [Cmaj7]"
+},
+"ดีแต่ปาก": {
+"src": "https://www.dochord.com/353983/",
+"text": "{key: C}\n\n# Intro\n[C] [Em] [F] [Dm]\n\n# ท่อนร้อง\n[C] [Em]\n[F] [Dm]\n[C] [Em]\n[F] [G]\n[Em] [Am]\n[Em] [Am]\n[F] [Dm] [G]\n\n# ท่อนฮุก\n[F]\n[Em]\n[Dm] [G]\n[F]\n[Em] [Am]\n[Dm] [G]\n\n# Instru\n[C] [Em] [F] [Dm]\n\n# ท่อนร้อง\n[C] [Em]\n[F] [Dm]\n[C] [Em]\n[F] [G]\n[Em] [Am]\n[Em] [Am]\n[F] [Dm] [G]\n\n# ท่อนฮุก\n[F]\n[Em]\n[Dm] [G]\n[F]\n[Em] [Am]\n[Dm] [G]\n[C]\n[F] [Fm] [C]\n[F] [Fm] [G]\n\n# Instru\n[C]\n[C] [Cmaj7] [C7] [A7]\n[Dm] [DmM7] [G] [G]\n\n# ท่อนฮุก\n[F]\n[Em]\n[Dm] [G]\n[F]\n[Em] [Am]\n[Dm] [G]\n[F]\n[Em] [Am]\n[Dm] [G]\n\n# จบ\n[C] [Em] [F]\n[Dm]\n[C] [Em] [F] [Dm] [C]"
+},
+"รักไม่ช่วยอะไร": {
+"src": "https://www.dochord.com/369995/",
+"text": "{key: D}\n\n# Intro\n[D] [A/C#] [Bm] [A] [G] [A]\n[D] [A/C#] [Bm] [A] [G] [A]\n\n# ท่อนร้อง\n[D] [A/C#] [Bm] [A]\n[G] [A]\n[D] [A/C#] [Bm] [A]\n[G] [B7]\n[G] [Gm]\n[D] [A/C#] [Bm] [A]\n[Em]\n[A]\n\n# ท่อนฮุก\n[D] [G]\n[Em] [F#7]\n[Bm] [E]\n[G] [A]\n[D] [G]\n[Em] [F#7]\n[Bm] [E7]\n[G] [A]\n\n# Instru\n[D] [A/C#] [Bm] [A] [G] [A]\n\n# ท่อนร้อง\n[D] [A/C#] [Bm] [A]\n[G] [A]\n[D] [A/C#] [Bm] [A]\n[G] [B7]\n[G] [Gm]\n[D] [A/C#] [Bm] [A]\n[Em]\n[A]\n\n# ท่อนฮุก\n[D] [G]\n[Em] [F#7]\n[Bm] [E]\n[G] [A]\n[D] [G]\n[Em] [F#7]\n[Bm] [E7]\n[G] [A]\n\n# ท่อนแยก\n[C] [G]\n[F#m]\n[B]\n[G]\n[F#m]\n[Em]\n[A]\n\n# ท่อนฮุก\n[D] [G]\n[Em] [F#7]\n[Bm]\n[E]\n[G] [A]\n[D] [G]\n[Em] [F#7]\n[Bm] [E7]\n[G] [A]\n\n# จบ\n[D] [A/C#] [Bm] [A]\n[G] [A] [D]"
+},
+"ไม่สมศักดิ์ศรี": {
+"src": "https://www.dochord.com/56522/",
+"text": "{key: C}\n\n# Intro\n[C] [F] [G] [C]\n\n# ท่อนร้อง\n[Am] [G] [Am]\n[G] [Am]\n[G] [F]\n[Am] [G] [Am]\n[G] [Am] [G]\n[F] [G]\n\n# ท่อนฮุก\n[Dm] [G]\n[C] [G/B] [Am]\n[Dm] [G] [C] [C7]\n[Dm] [G]\n[C] [G/B] [Am]\n[Dm] [G] [C]\n\n# ท่อนร้อง\n[Am] [G] [Am]\n[G] [Am] [G]\n[F] [G]\n\n# ท่อนฮุก\n[Dm] [G]\n[C] [G/B] [Am]\n[Dm] [G] [C] [C7]\n[Dm] [G]\n[C] [G/B] [Am]\n[Dm] [G] [C]\n\n# Instru\n[Am] [AmM7] [Am7] [Am6]\n[Dm] [G] [F] [G]\n\n# ท่อนฮุก\n[Dm] [G]\n[C] [G/B] [Am]\n[Dm] [G] [C] [C7]\n[Dm] [G]\n[C] [G/B] [Am]\n[Dm] [G] [C]\n[Dm] [G] [C]"
+},
+"สัญญาเดือนหก": {
+"src": "https://www.dochord.com/366738/",
+"text": "{key: G}\n\n# Intro\n[Em] [C] [G] [D]\n\n# ท่อนร้อง\n[Em]\n[C]\n[G]\n[D]\n[Em]\n[C]\n[G]\n[D]\n[Em]\n[C]\n[G]\n[D]\n[C]\n[Em]\n[G]\n[D]\n\n# ท่อนฮุก\n[G]\n[D]\n[Em]\n[C]\n[G]\n[D]\n[Em]\n[C]\n[Em]\n[Em]\n[C]\n[G]\n[D]\n\n# Instru\n[Em]\n\n# ท่อนร้อง\n[C]\n[Em]\n[G]\n[D]\n\n# ท่อนฮุก\n[G]\n[D]\n[Em]\n[C]\n[G]\n[D]\n[Em]\n[C]\n[G]\n[D]\n[Em]\n[C]\n\n# จบ\n[G]"
+},
+"กระเป๋าแบนแฟนยิ้ม": {
+"src": "https://www.dochord.com/124844/",
+"text": "{key: G}\n\n# Intro\n[Em] [Bm] [Em] [Bm]\n[C] [Bm] [Em] [G] [C]\n\n# ท่อนร้อง\n[G]\n[Em] [D]\n[Am]\n[D] [G]\n[G]\n[Em] [D]\n[Am]\n[D] [G] [G7]\n\n# ท่อนฮุก\n[C] [D]\n[G] [D/F#] [Em]\n[Am]\n[D] [G] [G7]\n[C] [D] [G] [D/F#] [Em]\n[Am] [D]\n\n# Instru\n[C] [D] [C] [D]\n\n# ท่อนร้อง\n[G]\n[Em] [D]\n[Am]\n[D] [G]\n[G]\n[Em] [D]\n[Am]\n[D] [G] [G7]\n\n# ท่อนฮุก\n[C] [D]\n[G] [D/F#] [Em]\n[Am]\n[D] [G] [G7]\n[C] [D] [G] [D/F#] [Em]\n[Am] [D]\n[Am] [D]\n\n# Instru\n[G] [D/F#] [Em] [D]\n[Am] [D] [G] [G7]\n\n# ท่อนร้อง\n[Am]\n[D] [G] [G7]\n\n# ท่อนฮุก\n[C] [D]\n[G] [D/F#] [Em]\n[Am]\n[D] [G] [G7]\n[C] [D] [G] [D/F#] [Em]\n[Am] [D]\n[Am] [D]\n[Am] [D]\n\n# จบ\n[G] [D/F#] [Em] [D]\n[Am] [D] [G] [G7]\n[G] [D/F#] [Em] [D]\n[Am] [D] [Am] [D] [Am] [D] [G]"
+},
+"จั๊กกิ้มกับตั๊กโต": {
+"src": "https://www.dochord.com/364898/",
+"text": "{key: A}\n\n# Intro\n[A] [A] [E] [Bm] [Bm] [A]\n[A] [A] [A] [A]\n[Bm] [Bm] [Bm] [A]\n\n# ท่อนร้อง\n[A]\n[Bm]\n[A]\n[A]\n[Bm]\n[A]\n\n# ท่อนฮุก\n[D]\n[E] [A]\n[F#m] [Bm]\n[E]\n[D]\n[E] [A]\n[F#m] [Bm]\n[E] [A]\n\n# ท่อนฮุก 2\n[A]\n[D] [E] [A]\n[A]\n[D] [E] [A]\n\n# Instru\n[A] [A] [A] [A]\n[Bm] [Bm] [Bm] [A]\n\n# ท่อนฮุก\n[D]\n[E] [A]\n[F#m] [Bm]\n[E]\n[D]\n[E] [A]\n[F#m] [Bm]\n[E] [A]\n\n# ท่อนฮุก 2\n[A]\n[D] [E] [A]\n[A]\n[D] [E] [A]\n\n# Instru\n[A] [A] [A] [A]\n\n# ท่อนฮุก\n[D] [E]\n[A] [E/G#] [F#m]\n[Bm]\n[E]\n[D]\n[E] [A]\n[F#m] [Bm]\n[E] [A]\n\n# ท่อนฮุก 2\n[A]\n[D] [E] [A]\n[A]\n[D] [E] [A]\n[A]\n[D] [E] [A]\n[A]\n[D] [E] [A]\n\n# จบ\n[A] [A] [A] [A]\n[Bm] [Bm] [Bm] [A]"
+},
+"อ๊อดๆ": {
+"src": "https://www.dochord.com/124873/",
+"text": "{key: D}\n\n# Intro\n[D] [A] [Bm] [A]\n\n# ท่อนร้อง\n[D] [A] [Bm]\n[A]\n[D] [A] [Bm]\n[A]\n[D] [A]\n[Bm] [A]\n[D] [A]\n[Bm] [F#m]\n\n# ท่อนฮุก\n[G]\n[Bm]\n[G]\n[A]\n[D]\n[Bm]\n[G]\n[A]\n\n# ท่อนร้อง\n[D] [A] [Bm]\n[A]\n[D] [A] [Bm]\n[A]\n[D] [A]\n[Bm] [A]\n[D] [A]\n[Bm] [F#m]\n\n# ท่อนฮุก\n[G]\n[Bm]\n[G]\n[A]\n[D]\n[Bm]\n[G]\n[A]\n\n# Instru\n[Bm] [A] [Em] [A]\n\n# ท่อนแยก\n[Bm] [A] [Em]\n[A]\n[Bm] [A] [Em]\n[A]\n\n# ท่อนฮุก\n[D]\n[Bm]\n[G]\n[A]\n[D]\n[Bm]\n[G]\n[A]\n\n# จบ\n[D] [A] [Bm]\n[A]\n[D] [A] [Bm]\n[A] [D]"
+},
+"โคโยตี้": {
+"src": "https://www.dochord.com/365967/",
+"text": "{key: Dm}\n\n# Intro\n[Dm] [Bb] [Dm] [Bb]\n\n# ท่อนร้อง\n[Dm]\n[Bb]\n[C]\n[Dm]\n[Dm]\n[Bb]\n[C] [Dm]\n[Dm] [Bb]\n[C] [Dm]\n[Dm] [Bb]\n[C] [Dm]\n\n# ท่อนฮุก\n[Bb] [C]\n[F] [Dm]\n[Bb] [C] [Dm]\n\n# ท่อนฮุก 2\n[Dm]\n[Bb]\n[C] [Dm]\n[Dm] [Bb]\n[C] [Dm]\n\n# Instru\n[Dm] [Bb] [Dm] [Bb]\n\n# ท่อนร้อง\n[Dm]\n[Dm]\n[Dm]\n[Dm]\n\n# ท่อนฮุก\n[Bb] [C]\n[F] [Dm]\n[Bb] [C] [Dm]\n\n# ท่อนฮุก 2\n[Dm]\n[Bb]\n[C] [Dm]\n[Dm] [Bb]\n[C] [Dm]\n[Dm] [Bb]\n[C] [Dm]\n[Dm] [Bb]\n[C] [Dm]\n\n# จบ\n[Dm]"
+},
+"เจ็บจุงเบย": {
+"src": "https://www.dochord.com/189575/",
+"text": "{key: Dm}\n\n# Intro\n[Dm] [F] [Bb] [Gm]\n\n# ท่อนร้อง\n[Dm] [F] [Bb] [Gm]\n[Dm] [F] [Bb] [Gm]\n[Dm] [F] [Bb] [Gm]\n[Dm] [F] [Bb] [C]\n\n# ท่อนฮุก\n[F] [C] [Dm]\n[Bb] [F]\n[C] [Dm] [Bb]\n[F] [C] [Dm]\n[Bb] [F] [C] [Dm]\n\n# Instru\n[Dm]\n\n# ท่อนร้อง\n[Dm]\n[Dm] [F] [Bb] [Gm]\n[Dm] [F] [Bb] [C]\n\n# ท่อนฮุก\n[F] [C] [Dm]\n[Bb] [F]\n[C] [Dm] [Bb]\n[F] [C] [Dm]\n[Bb] [F] [C] [Dm]\n\n# Instru\n[Dm]\n\n# ท่อนฮุก\n[F] [C] [Dm]\n[Bb] [F]\n[C] [Dm] [Bb]\n[F] [C] [Dm]\n[Bb] [F]\n[C] [Dm] [Bb]\n[F] [C] [Dm]\n[Bb] [F]\n[C] [Dm] [Bb]\n[F] [C] [Dm]\n[Bb] [F] [C] [Dm]\n[Dm]\n\n# จบ\n[Dm]"
+},
+"ยินดีที่ไม่รู้จัก": {
+"src": "https://www.dochord.com/37788/",
+"text": "{key: Eb}\n{capo: 1}\n\n# Intro\n[Eb] [Cm] [Bb] [Bb]\n\n# ท่อนร้อง\n[Eb] [Gm]\n[Fm] [Bb]\n[Eb] [Gm]\n[Fm] [Bb]\n\n# ท่อนก่อนฮุก\n[Gm]\n[Bbm] [C]\n[F] [Bb]\n\n# ท่อนฮุก\n[Ab] [Abm] [Gm] [Cm]\n[Ab] [Abm]\n[Gm] [C]\n[Fm] [Bb] [Eb]\n\n# Instru\n[Eb] [Cm] [Bb] [Bb]\n\n# ท่อนร้อง\n[Eb] [Gm]\n[Fm] [Bb]\n[Eb] [Gm]\n[Fm] [Bb]\n\n# ท่อนก่อนฮุก\n[Gm]\n[Bbm] [C]\n[F] [Bb]\n\n# ท่อนฮุก\n[Ab] [Abm] [Gm] [Cm]\n[Ab] [Abm]\n[Gm] [C]\n[Fm] [Bb] [Eb]\n\n# Instru\n[Gm] [Gm] [Bbm] [C]\n[F] [F] [Bb] [Bb]\n\n# ท่อนฮุก\n[Ab] [Abm] [Gm] [Cm]\n[Ab] [Abm]\n[Gm] [C]\n[Fm] [Bb] [Eb]\n[Ab] [Abm] [Gm] [Cm]\n[Ab] [Abm]\n[Gm] [C]\n[Fm] [Bb] [Eb]"
+},
+"จิ๊จ๊ะ": {
+"src": "https://www.dochord.com/207232/",
+"text": "{key: D}\n\n# Intro\n[Bm] [G]\n[D] [Bm] [A] [G] [Bm]\n\n# ท่อนร้อง\n[Bm] [G]\n[Bm] [G]\n[Bm] [G]\n[Bm] [G]\n[D] [A/C#] [Bm]\n[G]\n[D] [A/C#] [Bm]\n[G]\n\n# ท่อนฮุก\n[D] [Bm]\n[A] [G]\n[D] [Bm]\n[A] [G]\n[D] [Bm]\n[A] [G]\n[D] [Bm]\n[A] [G] [Bm]\n\n# ท่อนร้อง\n[Bm] [G]\n[Bm] [G]\n[Bm] [G]\n[Bm] [G]\n[D] [A/C#] [Bm]\n[G]\n[D] [A/C#] [Bm]\n[G]\n\n# ท่อนฮุก\n[D] [Bm]\n[A] [G]\n[D] [Bm]\n[A] [G]\n[D] [Bm]\n[A] [G]\n[D] [Bm]\n[A] [G] [Bm]\n\n# Instru\n[D] [Bm] [A] [G]\n\n# ท่อนฮุก\n[D] [Bm]\n[A] [G]\n[D] [Bm]\n[A] [G]\n[D] [Bm]\n[A] [G]\n[D] [Bm]\n[A] [G] [Bm]\n[D] [Bm]\n[A] [G]\n[D] [Bm]\n[A] [G]\n[D] [Bm]\n[A] [G]\n[D] [Bm]\n[A] [G] [Bm]\n\n# จบ\n[G]"
+},
+"กลัวว่าฉันจะไม่เสียใจ": {
+"src": "https://www.dochord.com/378192/",
+"text": "{key: F}\n\n# ท่อนร้อง\n[F]\n[Dm]\n[Gm]\n[C]\n[Am]\n[Dm]\n[Gm]\n[C]\n[Am] [Dm]\n[Gm]\n[C]\n[Am]\n[Dm]\n[Gm]\n[C]\n\n# ท่อนฮุก\n[F]\n[Dm]\n[Gm]\n[C]\n[Am]\n[Dm]\n[Gm]\n[C]\n\n# Instru\n[F] [Dm] [Gm] [C]\n[Am] [Dm] [Gm] [C]\n\n# ท่อนร้อง\n[Am] [Dm]\n[Gm]\n[C]\n[Am]\n[Dm]\n[Gm]\n[C]\n\n# ท่อนฮุก\n[F]\n[Dm]\n[Gm]\n[C]\n[Am]\n[Dm]\n[Gm]\n[C]\n[F]\n[Dm]\n[Gm]\n[C]\n[Am]\n[Dm]\n[Gm]\n[C] [F] [F7]\n\n# ท่อนแยก\n[Bb]\n[Bbm]\n[Am]\n[Dm]\n[Gm]\n[Bb]\n[C]\n\n# จบ\n[Bb] [Am] [Gm] [F]\n[Bb] [Am] [Dm] [G7]\n[Gm] [Eb7] [F]"
+},
+"ห้ามใจ": {
+"src": "https://www.dochord.com/33421/",
+"text": "{key: Em}\n\n# Intro\n[Em] [Em] [C] [C]\n\n# ท่อนร้อง\n[Em] [Am] [Bm]\n[Em] [Am] [Bm]\n\n# ท่อนก่อนฮุก\n[Em]\n[C]\n[Em]\n[C] [D]\n\n# ท่อนฮุก\n[G] [D/F#] [Em]\n[C]\n[G] [D/F#] [Em]\n[C] [C]\n\n# ท่อนร้อง\n[Em] [Am] [Bm]\n[Em] [Am] [Bm]\n\n# Instru\n[Em] [Em] [C] [C]\n\n# ท่อนก่อนฮุก\n[Em] [C]\n[Em] [C]\n[D]\n\n# ท่อนฮุก\n[G] [D/F#] [Em] [C]\n[G] [D/F#] [Em]\n[C] [Em]\n[C] [Em] [C]\n\n# จบ\n[Em]"
+},
+"คิดฮอด": {
+"src": "https://www.dochord.com/57373/",
+"text": "{key: Cm}\n{capo: 1}\n\n# Intro\n[Cm7] [Cm7] [Cm7] [Cm7]\n\n# ท่อนร้อง\n[Cm7]\n[Ab] [Gm]\n[Cm7]\n[Ab] [Gm]\n\n# Instru\n[Cm7] [Cm7] [Ab] [Gm]\n\n# ท่อนร้อง\n[Cm7]\n[Ab] [Gm]\n[Cm7]\n[Ab] [Gm]\n[Cm7]\n[Ab]\n[Gm]\n[Cm7]\n[Ab]\n[Gm]\n[Cm7]\n[Ab]\n\n# ท่อนฮุก\n[Gm] [Bb] [Cm]\n[Ab] [Gm] [Bb]\n[Cm7]\n[Ab]\n[Gm] [Bb]\n\n# Instru\n[Cm7] [Cm7] [Cm7] [Cm7]\n\n# ท่อนร้อง\n[Cm7]\n[Ab] [Gm]\n[Cm7]\n[Ab] [Gm]\n[Cm7]\n[Ab]\n[Gm]\n[Cm7]\n[Ab]\n[Gm]\n[Cm7]\n[Ab]\n\n# ท่อนฮุก\n[Gm] [Cm]\n[Ab] [Gm] [Bb]\n[Cm7]\n[Ab]\n[Gm] [Bb]\n[Cm] [Cm] [Ab] [Gm] [Bb]\n[Ab] [Bb]\n[Ab] [Bb]\n[Ab] [Gm]\n[Ab] [Gm]\n[Bb] [Ab] [Bb]\n\n# Instru\n[Cm]\n\n# ท่อนฮุก\n[Cm]\n[Ab] [Gm] [Bb]\n[Cm7]\n[Ab]\n[Gm] [Bb] [Cm] [Ab]\n[Gm] [Bb] [Cm] [Ab]\n[Gm] [Bb] [Cm7]"
+},
+"ยาพิษ": {
+"src": "https://www.dochord.com/33961/",
+"text": "{key: Em}\n\n# Intro\n[Em] [Em] [Am] [Bm]\n\n# ท่อนร้อง\n[Em7] [Am7]\n[Bm7] [Em7]\n[Am7] [Bm7]\n[Em7] [Am7]\n[Bm7] [Em7]\n[Am7] [Bm7]\n[Em] [Am] [Bm]\n[Em] [Am] [Bm]\n[Em] [Am] [Bm]\n[Em] [Am] [Bm]\n\n# ท่อนฮุก\n[Em]\n[Am] [Bm]\n[Em]\n[Am] [Bm]\n[Em]\n[Am] [Bm]\n[Em] [Am]\n[Bm]\n[Em] [Am] [Bm]\n\n# ท่อนร้อง\n[Em7] [Am7]\n[Bm7] [Em7]\n[Am7] [Bm7]\n[Em] [Am] [Bm]\n[Em] [Am] [Bm]\n[Em] [Am] [Bm]\n[Em] [Am] [Bm]\n\n# ท่อนฮุก\n[Em]\n[Am] [Bm]\n[Em]\n[Am] [Bm]\n[Em]\n[Am] [Bm]\n[Em] [Am]\n[Bm]\n[Em] [Am] [Bm]\n\n# Instru\n[Em] [Em] [Am] [Bm]\n\n# ท่อนร้อง\n[Em]\n[Em] [Am] [Bm]\n[Em] [Am] [Bm]\n[Em] [Am] [Bm]\n[Em] [Am]\n\n# ท่อนฮุก\n[Em]\n[Am] [Bm]\n[Em]\n[Am] [Bm]\n[Em]\n[Am] [Bm]\n[Em]\n[Am] [Bm]\n[Em]\n[Am] [Bm]\n[Em]"
+},
+"รสชาติชีวิต": {
+"src": "https://www.dochord.com/381941/",
+"text": "{key: Bm}\n\n# Intro\n[Bm] [D] [G] [Em]\n[Bm] [Bm]\n\n# ท่อนร้อง\n[Bm] [D]\n[G] [A]\n[Bm] [D]\n[G] [A]\n[Bm] [D]\n[G] [A]\n[Bm] [D]\n[G] [A]\n[Bm]\n[Bm] [D]\n[G] [A]\n[Bm] [D]\n[G] [A]\n[Bm] [D]\n[G] [A]\n[Bm] [D]\n[G] [A]\n[Bm] [A]\n\n# ท่อนฮุก\n[Bm] [D]\n[G] [A]\n[Bm] [D]\n[G] [A]\n[Bm]\n[D]\n[G] [A]\n[Bm]\n[D]\n[G] [A]\n[Bm]\n[D] [G] [A]\n[Bm] [D]\n[G] [A]\n\n# Instru\n[Bm] [D] [G] [A]\n[Bm] [Bm]\n[Bm] [Bm] [G] [A]\n\n# ท่อนฮุก\n[Bm] [D]\n[G] [A]\n[Bm] [D]\n[G] [A]\n[Bm]\n[D]\n[G] [A]\n[Bm]\n[D]\n[G] [A]\n[Bm]\n[D] [G] [A]\n[Bm] [D]\n[G] [A]\n\n# Instru\n[Bm] [D] [G] [A]\n\n# จบ\n[Bm] [D]\n[G] [A]\n[Bm] [D]\n[G] [A]\n[Bm]"
+},
+"จันทร์เจ้า": {
+"src": "https://www.dochord.com/37055/",
+"text": "{key: E}\n\n# Intro\n[E] [F#m] [G#m] [A]\n[C#m] [B] [A] [A]\n[E] [A] [D] [A]\n\n# ท่อนร้อง\n[E] [F#m]\n[G#m] [A]\n[E] [F#m]\n[G#m] [A]\n[E] [B]\n[D]\n\n# ท่อนฮุก\n[E]\n[B/D#]\n[C#m]\n[B] [A]\n[C#m] [B] [A]\n\n# Instru\n[E] [A] [D] [A]\n\n# ท่อนร้อง\n[E] [F#m]\n[G#m] [A]\n[E] [F#m]\n[G#m] [A]\n[E] [B]\n[D]\n\n# ท่อนฮุก\n[E] [B/D#]\n[C#m]\n[B] [A]\n[E]\n[B/D#]\n[C#m]\n[B] [A]\n[C#m] [B] [A]\n\n# Instru\n[C#m] [B] [A] [A]\n[E] [A] [D] [A]\n[C#m] [B] [A]\n[C#m] [B] [A]\n\n# จบ\n[C#m] [B]\n[A]\n[C#m]\n[B] [A]"
+}
+});
 // s.id = slot in a gig (for navigation); s.sk = the song itself, so lyrics/key saved once follow it into every gig
 const skOf = n => 's:' + n.replace(/\s+/g, '');
 GIGS.forEach(g => g.songs.forEach((s, i) => { s.id = `${g.id}-${i + 1}`; s.sk = skOf(s.n); const c = CHARTS[s.n]; if (c) { s.chart = c.text; s.src = c.src; } }));
@@ -1508,7 +1620,7 @@ function loadSong(id, keepScroll) {
   cur = {song: s, parsed: p, title: p.meta.title || e.n || 'ไม่มีชื่อเพลง', artist: p.meta.artist || e.a || '',
          bpm: p.meta.tempo || e.bpm || null, dur: p.meta.duration || 240, key, autoKey: auto,
          beats: p.meta.time && /^3\//.test(p.meta.time) ? 3 : p.meta.time && /^6\//.test(p.meta.time) ? 6 : 4};
-  const sp = store.get(spkey(songId), {t: 0, capo: 0}); state.t = sp.t || 0; state.capo = sp.capo || 0; if (sp.lvl) state.lvl = sp.lvl;
+  const sp = store.get(spkey(songId), {t: 0}); state.t = sp.t || 0; state.capo = sp.capo != null ? sp.capo : (p.meta.capo || 0); if (sp.lvl) state.lvl = sp.lvl;
   if (s.gig) state.gig = s.gig.id;
   savePrefs(); renderAll();
   if (!keepScroll) window.scrollTo(0, 0);
@@ -1517,11 +1629,18 @@ function loadSong(id, keepScroll) {
 /* ================= chord transform ================= */
 const shift = () => state.t - (state.inst === 'piano' ? 0 : state.capo);
 function shapeFlat() { if (!cur.key) return false; return useFlat((cur.key.pc + shift() + 12) % 12, cur.key.minor); }
+// sharp keys still write borrowed b2/b3/b6/b7 roots as flats (Bb in C, Eb in G); minor keys keep the raised 7th sharp (G# in Am)
+function spellNote(n) {
+  if (!cur.key) return noteName(n, false);
+  const k = (cur.key.pc + shift() + 120) % 12, tonic = cur.key.minor ? (k + 3) % 12 : k;
+  if (FLAT_MAJ.includes(tonic)) return noteName(n, true);
+  return noteName(n, (cur.key.minor ? [1, 3, 10] : [1, 3, 8, 10]).includes((n - tonic + 12) % 12));
+}
 function xform(raw) {
   const p = parseChord(raw); if (!p) return null;
   let q = p.q, bass = p.bass; if (state.simp) { q = QUAL[q].simp; bass = null; }
   const sh = shift(), root = (p.root + sh + 12) % 12, b = bass == null ? null : (bass + sh + 12) % 12;
-  const shape = chordName(root, q, b, shapeFlat());
+  const shape = spellNote(root) + q + (b != null ? '/' + spellNote(b) : '');
   let disp = shape;
   if (state.nash && cur.key) { const k = cur.key.pc; disp = DEG[(p.root - k + 12) % 12] + q + (bass != null ? '/' + DEG[(bass - k + 12) % 12] : ''); }
   return {shape, disp};
