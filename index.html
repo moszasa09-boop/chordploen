@@ -2114,6 +2114,8 @@ async function importBand() {
   let filled = 0, kept = 0, added = 0;
   for (const song of bd.songs || []) {
     const text = bandToText(song); if (!text || !song.title) continue;
+    // only take songs that actually carry lyrics; chord-only ones keep the checked chart here
+    if (!text.split('\n').some(l => !/^\s*[#{(]/.test(l) && HAS_THAI.test(l.replace(/\[[^\]]*\]/g, '')))) continue;
     const name = TITLE_ALIAS[song.title.replace(/\s+/g, '')] || song.title;
     const e = bySk.get(skOf(name));
     if (e) { if (hasLyrics(e.id)) { kept++; continue; } store.set(tkey(e.id), text); filled++; }
