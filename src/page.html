@@ -2133,6 +2133,11 @@ $('#io-go').onclick = () => {
   } catch (e) { $('#io-msg').textContent = 'ข้อมูลนี้อ่านไม่ได้ ตรวจว่าคัดลอกมาครบตั้งแต่ { จนถึง }'; }
 };
 
+// direct links to a round: chordploen.pages.dev/#qad1 , #qad2
+const ROUTES = {qad1: 'gqad-1', qad2: 'gqad-10'};
+const fromHash = () => { const id = ROUTES[location.hash.slice(1)]; if (id) { songId = id; state.tab = 'set'; } return id; };
+fromHash();
+window.addEventListener('hashchange', () => { const id = fromHash(); if (id) loadSong(id); });
 loadSong(songId);
 setSyncUI(); if (SY.auth) syncNow();
 })();
