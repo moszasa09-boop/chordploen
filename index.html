@@ -298,7 +298,7 @@ body.stage .stagebar{display:flex;flex-direction:column;position:fixed;left:0;ri
     <div class="libfoot">
       <div><kbd>[</kbd> <kbd>]</kbd> ลด/เพิ่มคีย์ · <kbd>Space</kbd> เลื่อน · <kbd>,</kbd> <kbd>.</kbd> ช้าลง/เร็วขึ้น · <kbd>M</kbd> คลิก · <kbd>←</kbd> <kbd>→</kbd> เพลงก่อน/ถัดไป · <kbd>S</kbd> โหมดเวที</div>
       <div class="sync"><span class="sdot" id="sync-dot"></span><span id="sync-txt" style="flex:1;min-width:0">ยังไม่ได้เชื่อมซิงก์ข้ามเครื่อง</span><button class="tb" id="sync-open">ตั้งค่าซิงก์</button></div>
-      <div class="btns"><button class="tb" id="backup">คัดลอกข้อมูลสำรอง</button><button class="tb" id="restore">กู้คืน</button></div>
+      <div class="btns"><button class="tb" data-import-band>นำเข้าจากแอปคอร์ดเลื่อนตามเพลง</button><button class="tb" id="backup">คัดลอกข้อมูลสำรอง</button><button class="tb" id="restore">กู้คืน</button></div>
     </div>
   </aside>
 
@@ -402,7 +402,7 @@ body.stage .stagebar{display:flex;flex-direction:column;position:fixed;left:0;ri
 
 <div class="modal" id="prep" hidden>
   <div class="dialog" role="dialog" aria-labelledby="prep-h" style="width:min(900px,100%)">
-    <header><h3 id="prep-h">เตรียมเนื้อร้องทั้งเซ็ต</h3><button class="tb" id="prep-close">ปิด</button></header>
+    <header><h3 id="prep-h">เตรียมเนื้อร้องทั้งเซ็ต</h3><button class="tb primary" data-import-band>นำเข้าจากแอปคอร์ดเลื่อนตามเพลง</button><button class="tb" id="prep-close">ปิด</button></header>
     <div class="prepbody" id="prep-list"></div>
     <footer><span class="hint">กดเปิดหน้า dochord ของแต่ละเพลง → ลากคลุมตั้งแต่บรรทัดแรกจนจบ → คัดลอก → วางในช่องของเพลงนั้น · ช่องที่เว้นว่างไว้จะไม่ถูกแก้</span><button class="tb primary" id="prep-save">บันทึกทั้งหมด</button></footer>
   </div>
@@ -2082,6 +2082,49 @@ $('#sync-form').addEventListener('submit', doLogin);
 $('#sync-go').onclick = doLogin;
 $('#sync-off').onclick = () => { SY.auth = null; store.del('cp.auth'); $('#sync').hidden = true; setSyncUI(); toast('ออกจากระบบในเครื่องนี้แล้ว ข้อมูลบนระบบยังอยู่ครบ'); };
 document.addEventListener('visibilitychange', () => { if (document.visibilityState === 'visible' && SY.auth) syncNow(); });
+
+/* ================= import from the band's other app (คอร์ดเลื่อนตามเพลง) ================= */
+// Reads that app's published band-data.json at the moment the player asks, and saves each song into
+// this player's own storage. Songs that already have lyrics here are left alone.
+const BAND_URL = 'https://moszasa09-boop.github.io/film-collection/chord-scroller/band-data.json';
+const TITLE_ALIAS = {'อ๊อดอ๊อด': 'อ๊อดๆ', 'จี๊จ๊ะ': 'จิ๊จ๊ะ'};
+function bandToText(song) {
+  const out = [];
+  for (const b of song.blocks || []) {
+    if (b.type === 'instru') {
+      out.push('', '# ' + (b.label || 'Instru'));
+      if (b.bars && b.bars.length) out.push(b.bars.map(c => `[${c}]`).join(' '));
+      if (b.note) out.push('(' + b.note + ')');
+    } else if (b.type === 'note') { if (b.text && b.text.trim()) out.push('', '# ' + b.text.trim()); }
+    else if (b.type === 'end') out.push('', '# จบ');
+    else if (b.type === 'lines') {
+      out.push('');
+      for (const ln of b.lines || []) out.push(ln.map(([c, t]) => (c ? `[${c}]` : '') + (t || '')).join('').replace(/\s+$/, ''));
+    }
+  }
+  return out.join('\n').replace(/\n{3,}/g, '\n\n').trim();
+}
+async function importBand() {
+  toast('กำลังดึงเพลงจากแอปคอร์ดเลื่อนตามเพลง…');
+  let bd;
+  try { const r = await fetch(BAND_URL + '?t=' + Date.now(), {cache: 'no-store'}); if (!r.ok) throw new Error(r.status); bd = await r.json(); }
+  catch (e) { toast(location.hostname.endsWith('pages.dev') ? 'ดึงข้อมูลไม่ได้ ตรวจอินเทอร์เน็ตแล้วลองใหม่' : 'หน้านี้ดึงข้อมูลไม่ได้ ให้เปิดที่ chordploen.pages.dev'); return; }
+  const bySk = new Map(); GIGS.forEach(g => g.songs.forEach(x => bySk.set(x.sk, x)));
+  let filled = 0, kept = 0, added = 0;
+  for (const song of bd.songs || []) {
+    const text = bandToText(song); if (!text || !song.title) continue;
+    const name = TITLE_ALIAS[song.title.replace(/\s+/g, '')] || song.title;
+    const e = bySk.get(skOf(name));
+    if (e) { if (hasLyrics(e.id)) { kept++; continue; } store.set(tkey(e.id), text); filled++; }
+    else if (!userSongs.some(u => parseSong(u.text).meta.title === song.title)) {
+      userSongs.push({id: 'u' + Date.now() + '-' + added, text: `{title: ${song.title}}\n{artist: ${song.artist || ''}}\n${song.bpm ? `{tempo: ${song.bpm}}\n` : ''}\n${text}`}); added++;
+    }
+  }
+  if (added) store.set('cp.user', userSongs);
+  loadSong(songId, true); if (!$('#prep').hidden) openPrep();
+  toast(`นำเข้าแล้ว ${filled} เพลง${kept ? ` · ข้าม ${kept} เพลงที่มีเนื้อร้องอยู่แล้ว` : ''}${added ? ` · เพิ่มเข้าคลังเพลง ${added} เพลง` : ''}`);
+}
+document.addEventListener('click', e => { if (e.target.closest('[data-import-band]')) importBand(); });
 
 // backup / restore
 $('#backup').onclick = () => { const data = {}; store.keys().filter(k => !['cp.sync', 'cp.ts', 'cp.auth'].includes(k)).forEach(k => data[k] = store.get(k, null)); copyText(JSON.stringify({app: 'chordploen', v: 1, data}), 'คัดลอกข้อมูลสำรองแล้ว เก็บไว้ในโน้ตหรือส่งให้ตัวเองในไลน์'); };
